@@ -6,6 +6,8 @@ export const useDeleteBrand = () => {
         mutationKey: ["delete-brand"],
         mutationFn: (brandId: number) =>
             request.delete(`/brand/${brandId}/`),
+            
     }
+    
     );
 };

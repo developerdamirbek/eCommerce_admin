@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDeleteBrand } from './service/mutation/useDeleteBrand';
 
 export const Brands = () => {
-    const { data: brands, isLoading } = useGetBrand();
+    const { data: brands, isLoading, refetch} = useGetBrand();
     const navigate = useNavigate()
     const {mutate} = useDeleteBrand()
 
@@ -13,13 +13,15 @@ export const Brands = () => {
         console.log('Edit brand:', record);
     };
 
-    const handleDelete = (brandId : number) => {
+    const handleDelete = (brandId: number) => {
         mutate(brandId, {
             onSuccess: () => {
                 message.info('Brand deleted successfully!');
-            }
-        })
+                refetch()
+            },
+        });
     };
+    
 
     const columns = [
         {

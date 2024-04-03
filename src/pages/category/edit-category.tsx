@@ -126,7 +126,6 @@ export const EditCategory: React.FC = () => {
             <Spin spinning={categoryLoading || isPending}>
                 <Tabs items={items} defaultActiveKey='1' />
             </Spin>
-
         </div>
     );
 };
