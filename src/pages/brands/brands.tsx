@@ -4,24 +4,29 @@ import { useGetBrand } from './service/query/useGetBrand';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteBrand } from './service/mutation/useDeleteBrand';
 
-export const Brands = () => {
-    const { data: brands, isLoading, refetch} = useGetBrand();
-    const navigate = useNavigate()
-    const {mutate} = useDeleteBrand()
+interface Brand {
+    id: number;
+    image: string | null;
+    title: string;
+}
 
-    const handleEdit = (record: any) => {
-        console.log('Edit brand:', record);
+export const Brands: React.FC = () => {
+    const { data: brands, isLoading, refetch } = useGetBrand();
+    const navigate = useNavigate();
+    const { mutate } = useDeleteBrand();
+
+    const handleEdit = (brandId: number) => {
+        navigate(`/app/brand/edit/${brandId}`);
     };
 
     const handleDelete = (brandId: number) => {
         mutate(brandId, {
             onSuccess: () => {
                 message.info('Brand deleted successfully!');
-                refetch()
+                refetch();
             },
         });
     };
-    
 
     const columns = [
         {
@@ -47,27 +52,27 @@ export const Brands = () => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (data: any) => (
+            render: (_: any, data: Brand) => (
                 <div style={{ display: 'flex', gap: 10 }}>
-                    <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(data)}>Edit</Button>
+                    <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(data.id)}>Edit</Button>
                     <Popconfirm
-                    onConfirm={() => handleDelete(data?.id)}
+                        onConfirm={() => handleDelete(data.id)}
                         title="Delete the task"
                         description="Are you sure to delete this brand?"
                         icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                     >
-                        <Button icon={<DeleteOutlined/>} danger>Delete</Button>
+                        <Button icon={<DeleteOutlined />} danger>Delete</Button>
                     </Popconfirm>
                 </div>
             )
         }
     ];
 
-    
+
 
     return (
         <div>
-            <Button onClick={() => navigate("/app/brands/create")} type="primary" icon={<PlusCircleOutlined />}>
+            <Button style={{ marginBottom: 20 }} onClick={() => navigate("/app/brand/create")} type="primary" icon={<PlusCircleOutlined />}>
                 Create
             </Button>
             <Table

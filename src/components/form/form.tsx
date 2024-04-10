@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Upload, UploadProps, Image } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Upload, UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import './style.scss';
 
@@ -14,7 +14,6 @@ interface CreateFormProps {
 
 export const CreateForm: React.FC<CreateFormProps> = ({ onFinish, initialValues, isLoading }) => {
     const [form] = Form.useForm();
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
         if (initialValues) {
@@ -22,13 +21,11 @@ export const CreateForm: React.FC<CreateFormProps> = ({ onFinish, initialValues,
                 title: initialValues.title,
                 image: initialValues.image
             });
-            setImageUrl(initialValues.image as string);
         }
     }, [initialValues, form]);
 
     const handleChange: UploadProps['onChange'] = (info) => {
         if (info.file.status === 'done') {
-            setImageUrl(info.file.response.url);
         }
     };
 
@@ -77,11 +74,7 @@ export const CreateForm: React.FC<CreateFormProps> = ({ onFinish, initialValues,
                         </>
                    
                 </Upload.Dragger>
-                {initialValues?.image ? (
-                //@ts-ignore
-                <Image src={imageUrl?.url} alt="Uploaded" style={{ width: '100px' }} />
-
-                ) : null}
+        
             </Form.Item>
             <Form.Item>
                 <Button type="primary" loading={isLoading} htmlType="submit">

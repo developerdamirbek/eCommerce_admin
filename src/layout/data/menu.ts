@@ -1,4 +1,4 @@
-import { AppstoreAddOutlined, AppstoreOutlined, ContainerOutlined, PieChartOutlined } from "@ant-design/icons";
+import { AppstoreAddOutlined, ProductOutlined, ApartmentOutlined, ContainerOutlined, PieChartOutlined } from "@ant-design/icons";
 import { nanoid } from "@reduxjs/toolkit";
 
 export const menu = [
@@ -12,7 +12,7 @@ export const menu = [
         id: nanoid(),
         name: "Category List",
         path: '/app/category',
-        icon: AppstoreOutlined
+        icon: ApartmentOutlined 
     },
     {
         id: nanoid(),
@@ -31,5 +31,11 @@ export const menu = [
         name: "Attribute List",
         path: '/app/attributes',
         icon: ContainerOutlined
+    },
+    {
+        id: nanoid(),
+        name: "Product List",
+        path: '/app/products',
+        icon: ProductOutlined
     }
 ]

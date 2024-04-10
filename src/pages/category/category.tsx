@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Button, Table, Popconfirm, message, Image, Spin } from 'antd';
+import { Button, Table, Popconfirm, message, Image, Spin, Input } from 'antd';
 import { useGetCategory } from './service/query/useGetCategory';
-import { PlusCircleOutlined, DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import './style.scss';
 import { useDeleteCategory } from './service/mutation/useDeleteCategory';
 import { useNavigate } from 'react-router-dom';
@@ -104,15 +104,30 @@ export const Category = () => {
             ),
         },
     ];
+    const [searchText, setSearchText] = useState('');
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+    };
+
+    const filteredDataSource = searchText ? filteredData.filter(item =>
+        item.title.toLowerCase().includes(searchText.toLowerCase())
+    ) : filteredData;
 
     return (
         <div>
             <Button onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
                 Create
             </Button>
-
+            <Input
+                placeholder="Search title"
+                value={searchText}
+                onChange={handleSearch}
+                style={{ maxWidth: '400px', width: "100%", display: "flex", marginBottom: 16 }}
+                prefix={<SearchOutlined />}
+            />
             <Spin spinning={isLoading}>
-                <Table  className='table' dataSource={filteredData} columns={columns} />
+                <Table  className='table' dataSource={filteredDataSource} columns={columns} />
 
             </Spin>
 

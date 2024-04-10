@@ -12,6 +12,9 @@ import { Attribute } from "../pages/attribute/attribute";
 import { EditAttribute } from "../pages/attribute/edit-attribute";
 import { CreateAttribute } from "../pages/attribute/create-attribute";
 import { CreateBrand } from "../pages/brands/create-brand";
+import { EditBrand } from "../pages/brands/edit-brand";
+import { Products } from "../pages/products/products";
+import { CreateProduct } from "../pages/products/create-product";
 
 export const routes: RoutesType[] = [
     {
@@ -88,7 +91,25 @@ export const routes: RoutesType[] = [
     {
         id: nanoid(),
         name: "Brand Create",
-        path: "brands/create",
+        path: "brand/create",
         component: CreateBrand
+    },
+    {
+        id: nanoid(),
+        name: "Brand Edit",
+        path: "brand/edit/:id",
+        component: EditBrand
+    },
+    {
+        id: nanoid(),
+        name: "Products",
+        path: "products",
+        component: Products
+    },
+    {
+        id: nanoid(),
+        name: "Create Product",
+        path: "products/create",
+        component: CreateProduct
     }
 ]

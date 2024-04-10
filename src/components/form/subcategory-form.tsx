@@ -2,14 +2,17 @@ import React from 'react';
 import { Form, Upload, Button, Input, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import request from '../../config/request';
+import { useNavigate } from 'react-router-dom';
 
 interface SubcategoryFormProps {
     parentCategoryId: number | null;
 }
 
 export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({ parentCategoryId }) => {
+
+    const navigate = useNavigate()
+
     const handleFormSubmit = async (values: any) => {
-        console.log(values);
         
         try {
             const formData = new FormData();
@@ -27,6 +30,7 @@ export const SubcategoryForm: React.FC<SubcategoryFormProps> = ({ parentCategory
             });
 
             message.success('Subcategory created successfully!');
+            navigate("/app/category")
             console.log('Subcategory created:', response.data);
         } catch (error) {
             console.error('Error creating subcategory:', error);

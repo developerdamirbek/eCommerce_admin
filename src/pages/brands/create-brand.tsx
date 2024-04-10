@@ -1,34 +1,33 @@
 import { Typography, UploadFile, message } from "antd";
 import { CreateForm } from "../../components/form/form";
 import { usePostBrand } from "./service/mutation/usePostBrand";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
+interface FormValues {
+    title: string;
+    image: {
+        fileList: UploadFile[];
+    };
+}
+
 export const CreateBrand = () => {
     const { mutate, isPending } = usePostBrand();
+    const navigate = useNavigate()
 
-    const initialValues : {
-        title: string | undefined,
-        image: {
-            fileList: string[] | undefined
-        }
-    } = { title: '', image: { fileList: [] } }; 
+    const initialValues: FormValues = { title: '', image: { fileList: [] } };
 
-    const submit = (values: {
-        image: {
-            file: File,
-            fileList: UploadFile
-        },
-        title: string
-    }) => {
+    const submit = (values: FormValues) => {
         const formData = new FormData();
         formData.append('title', values.title);
-        if (values.image) {
-            formData.append('image', values.image.file);
+        if (values.image && values.image.fileList.length > 0) {
+            formData.append('image', values.image.fileList[0].originFileObj as File);
         }
 
         mutate(formData, {
             onSuccess: () => {
+                navigate("/app/brands")
                 message.success('Brand created successfully!');
             },
         });
