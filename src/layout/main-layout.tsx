@@ -41,8 +41,10 @@ export const MainLayout: React.FC = () => {
                             padding: 24,
                             margin: 0,
                             minHeight: 280,
+                            overflowY: 'auto',
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
+                            zIndex: 100
                         }}
                     >
                         <Outlet />

@@ -2,11 +2,29 @@ import React from 'react';
 import { Button, Card, Form, Input, Select } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
+import { useEditAttribute } from '../service/mutation/useEditAttribute';
 
 const { Option } = Select;
 
-export const AttributeEdit: React.FC = ({ }) => {
+interface AttributeEditProps {
+    itemId: number;
+}
+
+export const AttributeEdit: React.FC<AttributeEditProps> = ({ itemId }) => {
     const navigate = useNavigate();
+    const editAttributeMutation = useEditAttribute();
+
+    const handleSubmit = async (values: any) => {
+        try {
+            // Call the mutation function with the itemId and the updated data
+            await editAttributeMutation.mutateAsync({ itemId, data: values });
+            // Navigate to the desired page after successful mutation
+            navigate(`/app/attributes`);
+        } catch (error) {
+            console.error('Mutation failed:', error);
+            // Handle error if needed
+        }
+    };
 
     return (
         <div style={{ maxHeight: 460, overflowY: 'auto' }}>
@@ -16,11 +34,12 @@ export const AttributeEdit: React.FC = ({ }) => {
                 style={{ maxWidth: 600 }}
                 autoComplete="off"
                 initialValues={{ items: [{ name: '', subItems: [{ value: '' }] }] }}
+                onFinish={handleSubmit} // Call handleSubmit when the form is submitted
             >
                 <Form.List name="items">
                     {(fields, { }) => (
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            {fields.map((field) => (
+                            {fields.map((field, index) => (
                                 <Card
                                     size="small"
                                     key={field.key}
@@ -65,7 +84,7 @@ export const AttributeEdit: React.FC = ({ }) => {
                         </div>
                     )}
                 </Form.List>
-                <Button type='primary' htmlType='submit'>
+                <Button type='primary' htmlType='submit' loading={editAttributeMutation.isLoading}>
                     Update
                 </Button>
             </Form>

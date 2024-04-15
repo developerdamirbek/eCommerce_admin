@@ -16,8 +16,9 @@ export const Attribute = () => {
     const navigate = useNavigate();
 
     const handleEdit = (id: number) => {
-        navigate(`/app/attributes/edit/${id}`);
+        navigate(`/app/attributes/edit/${id}`, { state: { itemId: id, itemData: data?.results.find(item => item.id === id) } });
     };
+    
     const handleCreate = () => {
         navigate(`/app/attributes/create`);
     };

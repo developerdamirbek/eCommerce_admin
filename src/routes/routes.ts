@@ -15,6 +15,8 @@ import { CreateBrand } from "../pages/brands/create-brand";
 import { EditBrand } from "../pages/brands/edit-brand";
 import { Products } from "../pages/products/products";
 import { CreateProduct } from "../pages/products/create-product";
+import { Banner } from "../pages/banner/banner";
+import { CreateBanner } from "../pages/banner/create-banner";
 
 export const routes: RoutesType[] = [
     {
@@ -111,5 +113,17 @@ export const routes: RoutesType[] = [
         name: "Create Product",
         path: "products/create",
         component: CreateProduct
+    },
+    {
+        id: nanoid(),
+        name: "Create Banner",
+        path: "banner/create",
+        component: CreateBanner
+    },
+    {
+        id: nanoid(),
+        name: "Banner List",
+        path: "banner",
+        component: Banner
     }
 ]

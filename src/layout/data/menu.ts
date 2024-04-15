@@ -37,5 +37,11 @@ export const menu = [
         name: "Product List",
         path: '/app/products',
         icon: ProductOutlined
+    },
+    {
+        id: nanoid(),
+        name: "Banner List",
+        path: '/app/banner',
+        icon: ProductOutlined
     }
 ]
