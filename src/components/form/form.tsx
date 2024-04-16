@@ -55,6 +55,7 @@ export const CreateForm: React.FC<CreateFormProps> = ({ onFinish, initialValues,
                 name="image"
                 rules={[{ required: true, message: 'Please upload an image!' }]}
             >
+                
                 <Upload.Dragger
                     listType='picture-card'
                     name="image"

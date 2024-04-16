@@ -1,88 +1,80 @@
-import React from 'react';
-import { Button, Form, Input, Select, Space, Switch, Upload, message } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Image, Input, InputNumber, Select, Space, Switch, Upload, UploadFile, UploadProps, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { useGetSubcategories } from '../../subcategory/service/query/useGetSubcategory';
-import { usePostProduct } from '../service/mutation/usePostProduct';
 
-const { Option } = Select;
 
-interface Category {
-    id: number;
-    title: string;
-}
+
 
 interface ProductFormData {
-    category: number[];
+    category: string;
+    id: number,
     is_available: boolean;
     is_new: boolean;
     title: string;
     price: string;
     image?: {
         file: File;
+        fileList: FileList
     };
 }
 
+interface ProductProps {
+    submit: (data: ProductFormData) => void,
+    loading: boolean,
+    initailValue?: {
+        id: number;
+        title: string;
+        image: {
+            file: File;
+            fileList: FileList
+        };
+        price: string;
+        is_available: boolean;
+        category: string;
+        is_new: boolean;
+    }
+}
 
 
-export const ProductForm: React.FC = () => {
-    const { data } = useGetSubcategories();
-    const {mutate} = usePostProduct();
+export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailValue }) => {
 
-    const [form] = Form.useForm();
+    const { data } = useGetSubcategories()
+    const [fileList, setFileList] = useState<UploadFile[]>([])
 
-    const onFinish = async (values: ProductFormData) => {
-        try {
-            const formData = new FormData();
-            formData.append('category', String(values.category));
-            formData.append('is_available', String(values.is_available));
-            formData.append('is_new', String(values.is_new));
-            formData.append('title', values.title);
-            formData.append('price', values.price);
-            
-            // Check if image field is present and is a file
-            if (values.image && values.image.file instanceof File) {
-                const file = values.image.file;
-                formData.append('image', file);
-            }
-    
-            await mutate(formData);
-            message.success('Product created successfully');
-            form.resetFields();
-        } catch (error) {
-            message.error('Failed to create product');
-        }
-    };
-    
-    
+    const onchange: UploadProps["onChange"] = ({ fileList }) => {
+        setFileList(fileList)
+    }
+
 
     return (
         <Form
             style={{ width: 600 }}
             layout='vertical'
             name="productForm"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
+            initialValues={initailValue}
+            onFinish={submit}
             autoComplete="off"
-            form={form}
-            encType="multipart/form-data" 
+            encType="multipart/form-data"
         >
-            {data && (
-                <Form.Item
-                    label="Category"
-                    name="category"
-                    rules={[{ required: true, message: 'Please select category!' }]}
+
+            <Form.Item
+                label="Category"
+                name="category"
+                hidden={initailValue ? true : false}
+                rules={[{ required: true, message: 'Please select category!' }]}
+            >
+                <Select
+                    placeholder="Parent Category"
+                    options={data?.map((item: any) => ({
+                        value: item.id,
+                        label: item.title
+                    }))}
                 >
-                    <Select
-                        placeholder="Parent Category"
-                    >
-                        {data.map((category: Category) => (
-                            <Option key={category.id} value={category.id}>
-                                {category.title}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-            )}
+
+                </Select>
+            </Form.Item>
+
             <Space>
                 <Form.Item
                     name="is_available"
@@ -111,29 +103,38 @@ export const ProductForm: React.FC = () => {
                 label="Price"
                 rules={[{ required: true, message: 'Please input price!' }]}
             >
-                <Input type="number" placeholder="Price" />
+                <InputNumber<number>
+                    formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
+                    style={{ width: '100%' }}
+                />
             </Form.Item>
             <Form.Item
                 label="Upload"
                 name="image"
-                valuePropName="fileList"
-                getValueFromEvent={(e) => {
-                    if (Array.isArray(e)) {
-                        return e;
-                    }
-                    return e && e.fileList;
-                }}
                 rules={[{ required: true, message: 'Please upload image!' }]}
             >
-                <Upload.Dragger name="files" multiple={false}>
+                <Upload.Dragger listType='picture-card'
+                    name="image"
+                    action="/upload"
+                    fileList={fileList}
+                    beforeUpload={() => false}
+                    className='upload'
+                    onChange={onchange}
+                    multiple={false}
+                    maxCount={1}>
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                 </Upload.Dragger>
+
             </Form.Item>
+            {initailValue && !fileList.length && (
+                <Image width={100} src={typeof initailValue.image == "string" ? initailValue.image : ''} />
+            )}
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" loading={loading} htmlType="submit">
                     Submit
                 </Button>
             </Form.Item>
@@ -141,4 +142,3 @@ export const ProductForm: React.FC = () => {
     );
 };
 
-// Custom hook for post product mutation

@@ -7,33 +7,43 @@ import 'react-quill/dist/quill.snow.css';
 
 interface BannerPostType {
     title: string,
-    image?: File,
+    image?: {
+        file: File
+    },
     description: string
 }
 
 export const CreateBanner: React.FC = () => {
     const [form] = Form.useForm();
     const { mutate } = usePostBanner();
-    const [description, setDescription] = useState<string>('');
+    const [description, setDescription] = useState<string>('This is banner that for draft. Please follow me on Instagram');
 
     const onFinish = async (values: BannerPostType) => {
         const formData = new FormData();
         formData.append('title', values.title);
         formData.append('description', description);
         if (values.image) {
-            formData.append('image', values.image);
+            formData.append('image', values.image.file);
         }
 
         mutate(formData, {
             onSuccess: () => {
                 form.resetFields();
-                setDescription(''); // Reset description state
+                setDescription('');
                 message.success('Banner created successfully');
             },
             onError: (error) => {
                 message.error(error.message);
             },
         });
+    };
+
+    const handleChange = (info: any) => {
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
     };
 
     return (
@@ -48,13 +58,16 @@ export const CreateBanner: React.FC = () => {
             <Form.Item
                 name="image"
                 label="Image"
-                valuePropName="fileList"
                 rules={[{ required: true, message: 'Please upload an image!' }]}
             >
                 <Upload.Dragger
                     name="image"
-                    multiple={false}
+                    action="/upload"
                     beforeUpload={() => false}
+                    onChange={handleChange}
+                    className='upload'
+                    multiple={false}
+                    maxCount={1}
                 >
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
@@ -68,7 +81,7 @@ export const CreateBanner: React.FC = () => {
                 rules={[{ required: true, message: 'Please input the description!' }]}
             >
                 <ReactQuill
-                style={{height: 200, marginBottom: 20}}
+                    style={{ height: 200, marginBottom: 20 }}
                     theme="snow"
                     value={description}
                     onChange={setDescription}
