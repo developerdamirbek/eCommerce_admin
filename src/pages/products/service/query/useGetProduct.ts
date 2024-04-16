@@ -13,7 +13,7 @@ interface ProductType {
     is_new: boolean;
 }
 
-export const useGetproduct = (page = 1, pageSize = 2) => {
+export const useGetproduct = (page = 1, pageSize = 10) => {
     const offset = (page - 1) * pageSize;
 
     return useQuery({

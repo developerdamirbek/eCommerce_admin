@@ -15,6 +15,7 @@ interface FormDataType {
     };
 };
 
+
 export const CreateCategory = () => {
     const [activeTab, setActiveTab] = useState("1");
     const [formSubmitted, setFormSubmitted] = useState(false);

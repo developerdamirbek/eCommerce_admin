@@ -1,22 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import request from "../../../../config/request";
 
-interface Subcategory {
-    id?: number;
-    title: string;
-    image?: [];
-    parent?: null;
-}
-
-export const useUpdateSubcategory = () => {
+export const useUpdateSubcategory = (id: string | undefined) => {
     return useMutation({
         mutationKey: ["update-subcategory"],
-        mutationFn: ({ id, ...subcategoryData }: { id: string, subcategoryData: Subcategory }) => (
-            request.patch(`/category/${id}/`, subcategoryData)
-                .then(response => response.data)
-                .catch(error => {
-                    throw new Error(`Failed to update subcategory: ${error}`);
-                })
+        mutationFn: (data : FormData) => (
+            request.patch(`/category/${id}/`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(response => response.data)
         )
     });
 };

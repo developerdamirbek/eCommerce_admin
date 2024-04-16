@@ -13,8 +13,7 @@ export const useEditAttribute = () => {
     return useMutation({
         mutationKey: ["edit-attribute"],
         mutationFn: (data: DataType) => (
-            request.post("api/category_edit/", data
-            )
+            request.patch("api/category_edit/", data)
                 .then(response => response.data)
         )
     });

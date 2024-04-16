@@ -1,25 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 import request from '../../../../config/request';
 
+interface SubcategoryType {
+    id: number,
+    image: string,
+    title: string
+}
+
 export const useGetSubcategories = () => {
-    return useQuery({
-        queryKey: ['subcategories'],
-        queryFn: async () => {
-            try {
-                const response = await request.get('/api/subcategory/');
-                if (!response.data || !Array.isArray(response.data.results)) {
-                    throw new Error('Invalid response data');
-                }
-                const subcategories = response.data.results.map((subcategory: any) => ({
+    return useQuery(
+        {
+            queryKey: ['subcategories'],
+            queryFn: () => request.get('/api/subcategory/').then((res) => {
+                const { results } = res.data;
+                const subcategories = results.map((subcategory: SubcategoryType) => ({
                     id: subcategory.id,
                     image: subcategory.image,
                     title: subcategory.title
                 }));
                 return subcategories;
-            } catch (error) {
-                console.error('Error fetching subcategories:', error);
-                throw new Error('Error fetching subcategories');
-            }
+            })
+
         },
-    });
-};
+    );
+}

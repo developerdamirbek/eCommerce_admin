@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, Table, Popconfirm, message, Image, Spin, Input } from 'antd';
+import { Button, Table, Popconfirm, message, Image, Spin, Input, Space, Modal } from 'antd';
 import { useGetCategory } from './service/query/useGetCategory';
 import { PlusCircleOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import './style.scss';
@@ -7,6 +7,7 @@ import { useDeleteCategory } from './service/mutation/useDeleteCategory';
 import { useNavigate } from 'react-router-dom';
 //@ts-ignore
 import notification from './delete.mp3'
+import { Searchbar } from '../../components/search/searchbar';
 
 export const Category = () => {
     const { data, isLoading } = useGetCategory();
@@ -14,6 +15,8 @@ export const Category = () => {
     const { mutate: deleteCategory } = deleteCategoryMutation;
     const [deletedIds, setDeletedIds] = useState<number[]>([]);
     const navigate = useNavigate();
+
+
 
     const audioPlayer: any = useRef(null);
 
@@ -104,30 +107,34 @@ export const Category = () => {
             ),
         },
     ];
-    const [searchText, setSearchText] = useState('');
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchText(e.target.value);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
     };
 
-    const filteredDataSource = searchText ? filteredData.filter(item =>
-        item.title.toLowerCase().includes(searchText.toLowerCase())
-    ) : filteredData;
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
 
     return (
         <div>
-            <Button onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
-                Create
-            </Button>
-            <Input
-                placeholder="Search title"
-                value={searchText}
-                onChange={handleSearch}
-                style={{ maxWidth: '400px', width: "100%", display: "flex", marginBottom: 16 }}
-                prefix={<SearchOutlined />}
-            />
+            <Space style={{ display: 'flex', marginBottom: 10, alignItems: "center", justifyContent: "space-between" }}>
+                <Button style={{ marginBottom: 0 }} onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
+                    Create
+                </Button>
+                <Button icon={<SearchOutlined />} type="primary" onClick={showModal}>
+                    Search
+                </Button>
+                <Modal title="Search Category" open={isModalOpen} onCancel={handleCancel}>
+                    <Searchbar api_url='category' />
+                </Modal>
+            </Space>
+
             <Spin spinning={isLoading}>
-                <Table  className='table' dataSource={filteredDataSource} columns={columns} />
+                <Table className='table' dataSource={data} columns={columns} />
 
             </Spin>
 

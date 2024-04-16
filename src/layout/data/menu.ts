@@ -26,12 +26,12 @@ export const menu = [
         path: '/app/brands',
         icon: ContainerOutlined
     },
-    {
-        id: nanoid(),
-        name: "Attribute List",
-        path: '/app/attributes',
-        icon: ContainerOutlined
-    },
+    // {
+    //     id: nanoid(),
+    //     name: "Attribute List",
+    //     path: '/app/attributes',
+    //     icon: ContainerOutlined
+    // },
     {
         id: nanoid(),
         name: "Product List",
