@@ -3,7 +3,10 @@ import request from "../../../../config/request";
 
 interface BannerType {
     id: number,
-    image?: File,
+    image: {
+        file: File,
+        fileList: FileList
+    },
     title: string,
     description: string
 }

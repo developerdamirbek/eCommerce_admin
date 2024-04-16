@@ -1,18 +1,26 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Spin, message, Tabs, Table, TabsProps, Image, Button, Popconfirm } from 'antd';
-import { CreateForm } from '../../components/form/form';
+import { Spin, message, Tabs, Table, Image, Button, Popconfirm } from 'antd';
 import { useEditCategory } from './service/mutation/useEditCategory';
 import { useGetCategoryByID } from './service/query/useGetCategoryById';
 import { useGetSubcategoriesByCategoryID } from './service/mutation/useGetSubcategoriesByCategoryID';
-import { FormDataType } from './service/types/types';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useDeleteSubcategory } from '../subcategory/service/mutation/useDeleteSubcategory';
+import { CategoryForm } from './components/category-form';
+
+interface CategoryType {
+    id?: number;
+    title: string;
+    image?: {
+        file: File,
+        fileList: FileList
+    };
+}
 
 export const EditCategory: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { mutate } = useEditCategory(id);
-    const { data: categoryData, isLoading: categoryLoading } = useGetCategoryByID(id as string);
+    const { data: categoryData, isLoading: categoryLoading } = useGetCategoryByID(id);
     const { data: subcategories, isLoading: subcategoriesLoading, refetch: refetchSubcategories } = useGetSubcategoriesByCategoryID(id as string);
     const { mutate: deleteSub, isPending } = useDeleteSubcategory();
 
@@ -23,33 +31,29 @@ export const EditCategory: React.FC = () => {
         image: item.image
     }));
 
-    const handleSubmit = async (formData: FormDataType) => {
-        try {
+    const handleSubmit = (data: CategoryType) => {
             const formDataObject = new FormData();
-            formDataObject.append('title', formData.title);
-            if (formData.image?.file) {
-                formDataObject.append('image', formData.image.file);
+            formDataObject.append('title', data.title);
+            if (data.image) {
+                formDataObject.append('image', data.image.file);
             }
-            await mutate(formDataObject);
-            message.success('Category edited successfully!');
-        } catch (error) {
-            console.error('Error editing category:', error);
-            message.error('Error editing category!');
-        }
+            mutate(formDataObject, {
+                onSuccess: () => {
+                    message.success('Category edited successfully!');
+                }
+            });
+
     };
 
-    const handleDelete = async ({ id }: { id: string }) => {
-        try {
-            await deleteSub(id, {
+    const handleDelete =  (id: string) => {
+
+            deleteSub(id, {
                 onSuccess: () => {
                     message.info("Subcategory deleted successfully!");
                     refetchSubcategories();
                 }
             });
-        } catch (error) {
-            console.error('Error deleting subcategory:', error);
-            message.error('Error deleting subcategory!');
-        }
+
     };
 
     const columns = [
@@ -75,11 +79,11 @@ export const EditCategory: React.FC = () => {
             title: "Actions",
             dataIndex: 'actions',
             key: 'actions',
-            render: (_, data) => (
+            render: (data: { id: string }) => (
                 <span className='btn_group'>
                     <Popconfirm
                         title="Are you sure you want to delete this category?"
-                        onConfirm={() => handleDelete(data)}
+                        onConfirm={() => handleDelete(data.id)}
                         okText="Yes"
                         cancelText="No"
                     >
@@ -95,19 +99,11 @@ export const EditCategory: React.FC = () => {
         console.log("Edit");
     };
 
-    const items: TabsProps['items'] = [
+    const items = [
         {
             key: '1',
             label: 'Edit Category',
-            children: <CreateForm
-                initialValues={{
-                    title: categoryData?.title ?? '',
-                    //@ts-ignore
-                    image: categoryData?.image ? { file: null, url: categoryData.image } : undefined
-                }}
-                onFinish={handleSubmit}
-                isLoading={categoryLoading}
-            />
+            children: <CategoryForm loading={isPending} initialValue={categoryData} submit={handleSubmit}/>
         },
         {
             key: '2',
@@ -129,3 +125,4 @@ export const EditCategory: React.FC = () => {
         </div>
     );
 };
+

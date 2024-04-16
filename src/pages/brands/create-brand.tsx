@@ -1,14 +1,16 @@
-import { Typography, UploadFile, message } from "antd";
-import { CreateForm } from "../../components/form/form";
+import { Typography,  message } from "antd";
 import { usePostBrand } from "./service/mutation/usePostBrand";
 import { useNavigate } from "react-router-dom";
+import { BrandForm } from "./components/brand-form";
 
 const { Title } = Typography;
 
-interface FormValues {
+interface BannerType {
+    id: number,
     title: string;
-    image: {
-        fileList: UploadFile[];
+    image?: {
+      file: File,
+      fileList: FileList
     };
 }
 
@@ -16,15 +18,13 @@ export const CreateBrand = () => {
     const { mutate, isPending } = usePostBrand();
     const navigate = useNavigate()
 
-    const initialValues: FormValues = { title: '', image: { fileList: [] } };
 
-    const submit = (values: FormValues) => {
+    const submit = (data: BannerType) => {
         const formData = new FormData();
-        formData.append('title', values.title);
-        if (values.image && values.image.fileList.length > 0) {
-            formData.append('image', values.image.fileList[0].originFileObj as File);
+        formData.append('title', data.title);
+        if (data.image) {
+            formData.append("image", data.image.file);
         }
-
         mutate(formData, {
             onSuccess: () => {
                 navigate("/app/brands")
@@ -40,7 +40,7 @@ export const CreateBrand = () => {
                     Create Brand
                 </Title>
             </Typography>
-            <CreateForm initialValues={initialValues} onFinish={submit} isLoading={isPending} />
+            <BrandForm loading={isPending} submit={submit}/>
         </div>
     );
 };

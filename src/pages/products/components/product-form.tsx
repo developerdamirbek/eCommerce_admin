@@ -3,9 +3,6 @@ import { Button, Form, Image, Input, InputNumber, Select, Space, Switch, Upload,
 import { InboxOutlined } from '@ant-design/icons';
 import { useGetSubcategories } from '../../subcategory/service/query/useGetSubcategory';
 
-
-
-
 interface ProductFormData {
     category: string;
     id: number,

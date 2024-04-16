@@ -18,7 +18,7 @@ export interface CategoryListType {
 
 export const useGetBanner = (ordering?: string) => {
     return useQuery({
-        queryKey: ['banner', ordering], // Include ordering in the query key
+        queryKey: ['banner', ordering],
         queryFn: () => request.get<CategoryListType>(`/banner/${ordering ? `?ordering=${ordering}` : ''}`).then((res) => {
             const { results } = res.data;
             const dataSource = results.map((category) => ({

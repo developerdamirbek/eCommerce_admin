@@ -25,7 +25,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response:any) => {
     if (response.status === 401) {
-      return (window.location.pathname = "/app");
+      return (window.location.pathname = "/");
     }
     return response;
   },

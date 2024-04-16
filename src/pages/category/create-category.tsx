@@ -6,6 +6,7 @@ import { SubcategoryForm } from '../../components/form/subcategory-form';
 import { usePostCategory } from './service/mutation/usePostCategory';
 //@ts-ignore
 import SuccessNotify from "./success.mp3";
+import { CategoryForm } from './components/category-form';
 
 interface FormDataType {
     title: string;
@@ -56,7 +57,7 @@ export const CreateCategory = () => {
         {
             key: '1',
             label: 'Create Category',
-            children: <CreateForm isLoading={isPending} onFinish={handleCategoryFormSubmit} />,
+            children: <CategoryForm loading={isPending} submit={handleCategoryFormSubmit}/>,
           },
           {
             key: '2',
