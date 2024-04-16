@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import { useSearchQuery } from "./service/useGetSearch";
-import { Image, Input, Spin, Typography } from "antd";
+import { Image, Spin, Typography } from "antd";
 import Search from "antd/es/input/Search";
 
 export const Searchbar = ({ api_url }: { api_url: string }) => {

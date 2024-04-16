@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { MainLayout } from "./layout/main-layout"
 import { Login } from "./pages/login/login"
 import { routes } from "./routes/routes"

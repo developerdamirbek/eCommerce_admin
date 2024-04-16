@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Tabs, TabsProps, message } from 'antd';
 import './style.scss';
-import { CreateForm } from '../../components/form/form';
 import { SubcategoryForm } from '../../components/form/subcategory-form';
 import { usePostCategory } from './service/mutation/usePostCategory';
 //@ts-ignore

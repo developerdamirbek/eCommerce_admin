@@ -24,7 +24,7 @@ export const EditCategory: React.FC = () => {
     const { data: subcategories, isLoading: subcategoriesLoading, refetch: refetchSubcategories } = useGetSubcategoriesByCategoryID(id as string);
     const { mutate: deleteSub, isPending } = useDeleteSubcategory();
 
-    const dataSource = subcategories?.children?.map((item) => ({
+    const dataSource = subcategories?.children?.map((item:{key: number, id: number, title: string, image: string}) => ({
         key: item.id,
         id: item.id,
         title: item.title,
@@ -103,7 +103,7 @@ export const EditCategory: React.FC = () => {
         {
             key: '1',
             label: 'Edit Category',
-            children: <CategoryForm loading={isPending} initialValue={categoryData} submit={handleSubmit}/>
+            children: categoryLoading ? <Spin/> : <CategoryForm loading={isPending} initialValue={categoryData} submit={handleSubmit}/>
         },
         {
             key: '2',

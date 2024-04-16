@@ -14,23 +14,17 @@ export interface BrandListType {
     results: Brand[];
 }
 
-export const useGetBrand = (filterParams?: Record<string, string>) => {
+export const useGetBrand = (ordering?: string) => {
     return useQuery({
-        queryKey: ["brand", filterParams], // Include filterParams in the query key
+        queryKey: ["brand", ordering],
         queryFn: () => {
-            // Construct the request URL with filterParams
-            const url = "/brand/";
-            const params = new URLSearchParams(filterParams).toString();
-            const requestUrl = params ? `${url}?${params}` : url;
-
-            return request.get<BrandListType>(requestUrl).then((res) => {
+            return request.get<BrandListType>(`brand/${ordering ? `?ordering=${ordering}` : ''}`).then((res) => {
                 const { results } = res.data;
                 const dataSource = results.map((brand) => ({
                     key: brand.id.toString(),
                     id: brand.id,
                     title: brand.title,
-                    image: brand.image, // Include the image property
-                    // Add more properties as needed
+                    image: brand.image,
                 }));
                 return dataSource;
             });

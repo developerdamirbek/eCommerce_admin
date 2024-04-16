@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, Table, Popconfirm, message, Image, Spin, Input, Space, Modal } from 'antd';
+import { Button, Table, Popconfirm, message, Image, Spin, Space, Modal } from 'antd';
 import { useGetCategory } from './service/query/useGetCategory';
 import { PlusCircleOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import './style.scss';
@@ -44,12 +44,6 @@ export const Category = () => {
     const handleEdit = (categoryId: number) => {
         navigate(`/app/category/edit/${categoryId}`);
     };
-
-
-
-
-
-    const filteredData = data ? data.filter(item => !deletedIds.includes(item.id)) : [];
 
     const columns = [
         {

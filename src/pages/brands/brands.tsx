@@ -1,8 +1,10 @@
-import { Button, Image, Popconfirm, Table, message } from 'antd';
+import { Button, Image, Popconfirm, Select, Table, message } from 'antd';
 import { PlusCircleOutlined, EditOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useGetBrand } from './service/query/useGetBrand';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteBrand } from './service/mutation/useDeleteBrand';
+import { useEffect, useState } from 'react';
+import { Option } from 'antd/es/mentions';
 
 interface Brand {
     id: number;
@@ -11,12 +13,22 @@ interface Brand {
 }
 
 export const Brands: React.FC = () => {
-    const { data: brands, isLoading, refetch } = useGetBrand();
+    const [ordering, setOrdering] = useState("id");
+
+    const { data: brands, isLoading, refetch } = useGetBrand(ordering);
     const navigate = useNavigate();
     const { mutate } = useDeleteBrand();
 
     const handleEdit = (brandId: number) => {
         navigate(`/app/brand/edit/${brandId}`);
+    };
+
+    useEffect(() => {
+        refetch();
+    }, [ordering]);
+
+    const handleChange = (value: string) => {
+        setOrdering(value);
     };
 
     const handleDelete = (brandId: number) => {
@@ -27,6 +39,13 @@ export const Brands: React.FC = () => {
             },
         });
     };
+
+    const options = [
+        { value: "id", label: "ID - Ascending" },
+        { value: "-id", label: "ID - Descending" },
+        { value: "title", label: "Title - Ascending" },
+        { value: "-title", label: "Title - Descending" }
+    ];
 
     const columns = [
         {
@@ -75,6 +94,11 @@ export const Brands: React.FC = () => {
             <Button style={{ marginBottom: 20 }} onClick={() => navigate("/app/brand/create")} type="primary" icon={<PlusCircleOutlined />}>
                 Create
             </Button>
+            <Select placeholder defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
+                    {options.map(option => (
+                        <Option key={option.value} value={option.value}>{option.label}</Option>
+                    ))}
+                </Select>
             <Table
                 className='brandTable'
                 dataSource={brands}

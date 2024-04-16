@@ -4,6 +4,16 @@ import { BannerForm } from './components/banner-form';
 import { useGetBannertById } from './service/query/useGetBannerById';
 import { useEditBanner } from './service/mutation/useEditBanner';
 
+interface BannerType {
+    id: number,
+    image?: {
+        file: File,
+        fileList: FileList
+    },
+    title: string,
+    description: string
+}
+
 export const EditBanner = () => {
   const { id } = useParams();
   const {data, isLoading} = useGetBannertById(id)
@@ -11,7 +21,7 @@ export const EditBanner = () => {
   const navigate = useNavigate()
   
 
-  const submit = (data: any) => {
+  const submit = (data: BannerType) => {
     const formData = new FormData();
     formData.append("title", data.title);
     if(data.image && (data.image.file instanceof File)){
