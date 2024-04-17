@@ -1,29 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "../../../../config/request";
 
-interface ProductType {
+export interface CategoryType {
     id: number;
     title: string;
-    image: {
-        file: File;
-    };
-    price: string;
-    is_available: boolean;
-    category: number;
-    is_new: boolean;
+    image: string;
+    description: string
 }
 
-export interface ProductListType {
+export interface CategoryListType {
     count: number;
     next: number | null;
     previous: number | null;
-    results: ProductType[];
+    results: CategoryType[];
 }
 
-export const useGetProduct = ( page : number = 1 ) => {
+
+export const useGetPaginationBanner = (ordering : string = "id", page : number = 1 ) => {
     return useQuery({
-        queryKey: ['banner', page],
-        queryFn: () => request.get<ProductListType>(`/product/`, {
+        queryKey: ['banner', ordering, page],
+        queryFn: () => request.get<CategoryListType>(`/banner/${ordering ? `?ordering=${ordering}` : ''}`, {
             params: {offset: page, limit: 4}
         }).then((res) => {
             return {

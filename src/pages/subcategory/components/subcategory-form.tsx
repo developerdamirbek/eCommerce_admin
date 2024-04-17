@@ -51,7 +51,7 @@ export const SubcategoryForm: React.FC<SubcategoryProps> = ({ submit, loading, i
                 >
                     <Select
                         placeholder="Parent Category"
-                        options={data?.map((item: any) => ({
+                        options={data?.data.results.map((item: any) => ({
                             value: item.id,
                             label: item.title
                         }))}

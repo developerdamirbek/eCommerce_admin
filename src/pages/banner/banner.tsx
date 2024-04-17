@@ -1,17 +1,21 @@
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Image, Popconfirm, Select, Space, Spin, Table, message } from "antd";
+import { Button, Image, Pagination, PaginationProps, Popconfirm, Select, Space, Spin, Table, message } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetBanner } from "./service/query/useGetBanner";
 import { useDeleteBanner } from "./service/mutation/useDeleteBanner";
+import { useGetPaginationBanner } from "./service/query/useGetPaginationBanner";
 
 const { Option } = Select;
 
 export const Banner = () => {
     const navigate = useNavigate();
     const [ordering, setOrdering] = useState("id");
-    const { data, refetch, isLoading } = useGetBanner(ordering);
     const { mutate, isPending } = useDeleteBanner()
+
+    const [page, setPage] = useState(0)
+    const [page1, setPage1] = useState(1)
+    const { data, isLoading, refetch } = useGetBanner(ordering, page)
 
     useEffect(() => {
         refetch();
@@ -53,7 +57,7 @@ export const Banner = () => {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
-            render: (image: string) => <Image src={image} width={100} />,
+            render: (image: string) => <Image src={image} width={60} height={60} style={{ objectFit: "cover" }} />,
         },
         {
             title: 'Actions',
@@ -88,20 +92,34 @@ export const Banner = () => {
         { value: "-description", label: "Description - Descending" },
     ];
 
+    const pageChange: PaginationProps["onChange"] = (page) => {
+        setPage1(page)
+        setPage((page - 1) * 4)
+    }
     return (
         <div>
             <Space style={{ alignItems: "center", justifyContent: "space-between", width: '100%' }}>
                 <Button onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
                     Create
                 </Button>
-                <Select defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
-                    {options.map(option => (
-                        <Option key={option.value} value={option.value}>{option.label}</Option>
-                    ))}
-                </Select>
+                <div style={{display: "flex", flexDirection: "column", justifyContent:"end", alignItems: "end"}}>
+                    <Select defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
+                        {options.map(option => (
+                            <Option key={option.value} value={option.value}>{option.label}</Option>
+                        ))}
+                    </Select>
+                    <Pagination
+                        style={{ width: "100%", display: "flex", justifyContent: "end", marginBottom: 10, marginTop: 10 }}
+                        current={page1}
+                        total={data?.pageSize}
+                        defaultCurrent={page}
+                        pageSize={4}
+                        onChange={pageChange} />
+                </div>
             </Space>
+
             <Spin spinning={isLoading || isPending}>
-                <Table className="table" dataSource={data} columns={columns} />
+                <Table pagination={false} className="table" dataSource={data?.data.results} columns={columns} />
             </Spin>
         </div>
     );

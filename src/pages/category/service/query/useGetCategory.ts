@@ -2,25 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import request from "../../../../config/request";
 import { CategoryListType } from "../types/types";
 
-export const useGetCategory = (page = 1, pageSize = 10) => {
-    const offset = (page - 1) * pageSize;
 
+export const useGetCategory = ( page?: number ) => {
     return useQuery({
-        queryKey: ['category', { page, pageSize }],
+        queryKey: ['banner', page],
         queryFn: () => request.get<CategoryListType>(`/category/`, {
-            params: {
-                limit: pageSize,
-                offset: offset
-            }
+            params: {offset: page, limit: page ?  4 : ''}
         }).then((res) => {
-            const { results } = res.data;
-            const dataSource = results.map((category) => ({
-                key: category.id.toString(),
-                id: category.id,
-                title: category.title,
-                image: category.image,
-            }));
-            return dataSource;
+            return {
+                data: res.data,
+                pageSize: Math.ceil(res.data.count)
+            }
         })
     });
 };

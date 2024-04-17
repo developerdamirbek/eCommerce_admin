@@ -2,10 +2,13 @@
     import request from "../../../../config/request";
 
     interface DataType {
-        attr_list: {
+        attributes: {
+            attribute_id: null,
             title: string;
-            category: number[];
-            values: string[];
+            values: {
+                value: string,
+                value_id: null
+            }[];
         }[];
         category_id: string | null 
     }

@@ -21,7 +21,7 @@ interface AttributeProps {
             id: string | null,
             title: string,
             values : {
-                id: string,
+                Value_id: string,
                 value: string
             }[]
         }[]

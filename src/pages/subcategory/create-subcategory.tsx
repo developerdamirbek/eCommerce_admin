@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, message, Tabs, TabsProps } from 'antd';
+import {  message, Tabs, TabsProps } from 'antd';
 import { usePostCategory } from '../category/service/mutation/usePostCategory';
 import './style.scss';
 import { CreateAttribute } from './components/createAttribute';

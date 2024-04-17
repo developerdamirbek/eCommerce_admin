@@ -31,6 +31,7 @@ export const Searchbar = ({ api_url }: { api_url: string }) => {
                 {!data?.results?.length && !isLoading && <h2 style={{textAlign: "center"}}>Category Not Found</h2>}
                     {isLoading ? <Spin style={{width:"100%", display:"flex", justifyContent:"center", marginTop: 30}} /> : (
                         <List
+                        style={{maxHeight: 400, overflowY:"auto"}}
                         itemLayout="horizontal"
                         dataSource={listItem}
                         renderItem={(item: {id: number, image: string, title:string}) => (

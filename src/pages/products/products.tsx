@@ -1,13 +1,12 @@
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Image, Modal, Popconfirm, Space, Spin, Table } from "antd";
+import { Button, Image, Modal, Pagination, PaginationProps, Popconfirm, Space, Spin, Table } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useGetproduct } from "./service/query/useGetProduct";
+import { useGetProduct } from "./service/query/useGetProduct";
 import { useDeleteProduct } from "./service/mutation/useDeleteProduct";
 import { Searchbar } from "../../components/search/searchbar";
 import { useState } from "react";
 
 export const Products = () => {
-    const { data, refetch } = useGetproduct();
     const navigate = useNavigate();
     const { mutate, isPending } = useDeleteProduct();
 
@@ -21,6 +20,17 @@ export const Products = () => {
 
     };
 
+
+    const [page, setPage] = useState(1)
+    const [page1, setPage1] = useState(1)
+    const { data, isLoading, refetch } = useGetProduct(page)
+
+
+    const pageChange: PaginationProps["onChange"] = (page) => {
+        setPage1(page)
+        setPage((page - 1) * 4)
+    }
+
     const handleDelete = (productId: string) => {
         mutate(productId, {
             onSuccess: () => {
@@ -28,6 +38,7 @@ export const Products = () => {
             }
         });
     };
+
 
     const columns = [
         {
@@ -44,7 +55,7 @@ export const Products = () => {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
-            render: (image: string) => <Image src={image} alt="Product" style={{ maxWidth: 70 }} />,
+            render: (image: string) => <Image width={60} height={60} src={image} alt="Product" style={{ objectFit: "cover" }} />,
         },
         {
             title: 'Price',
@@ -68,7 +79,7 @@ export const Products = () => {
             key: 'actions',
             render: (record: { id: string }) => (
                 <span>
-                    <Button style={{marginRight: 20}} type="primary" icon={<EditOutlined />} onClick={() => handleEdit(Number(record.id))}>Edit</Button>
+                    <Button style={{ marginRight: 20 }} type="primary" icon={<EditOutlined />} onClick={() => handleEdit(Number(record.id))}>Edit</Button>
                     <Popconfirm
                         title="Are you sure you want to delete this product?"
                         icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
@@ -96,19 +107,28 @@ export const Products = () => {
     return (
         <div>
 
-            <Space style={{ display: 'flex', marginBottom: 10, alignItems: "center", justifyContent: "space-between" }}>
-                <Button style={{marginBottom: 0}} onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
+            <Space style={{ display: 'flex', marginBottom: 10, alignItems: "start", justifyContent: "space-between" }}>
+                <Button style={{ marginBottom: 0 }} onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
                     Create
                 </Button>
-                <Button icon={<SearchOutlined />} type="primary" onClick={showModal}>
-                    Search
-                </Button>
-                <Modal title="Search Category" open={isModalOpen} onCancel={handleCancel}>
-                    <Searchbar api_url='product' />
-                </Modal>
+                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "end" }}>
+                    <Button icon={<SearchOutlined />} type="primary" onClick={showModal}>
+                        Search
+                    </Button>
+                    <Modal title="Search Category" open={isModalOpen} onCancel={handleCancel}>
+                        <Searchbar api_url='product' />
+                    </Modal>
+                    <Pagination
+                        style={{ width: "100%", display: "flex", justifyContent: "end", marginBottom: 10, marginTop: 10 }}
+                        current={page1}
+                        total={data?.pageSize}
+                        defaultCurrent={page}
+                        pageSize={4}
+                        onChange={pageChange} />
+                </div>
             </Space>
             <Spin spinning={isPending}>
-                <Table className="table" dataSource={data} columns={columns} />
+                <Table pagination={false} className="table" dataSource={data?.data.results} columns={columns} />
             </Spin>
         </div>
     );

@@ -16,19 +16,16 @@ export interface CategoryListType {
 }
 
 
-export const useGetBanner = (ordering?: string) => {
+export const useGetBanner = (ordering : string = "id", page : number = 1 ) => {
     return useQuery({
-        queryKey: ['banner', ordering],
-        queryFn: () => request.get<CategoryListType>(`/banner/${ordering ? `?ordering=${ordering}` : ''}`).then((res) => {
-            const { results } = res.data;
-            const dataSource = results.map((category) => ({
-                key: category.id.toString(),
-                id: category.id,
-                title: category.title,
-                image: category.image,
-                description: category.description,
-            }));
-            return dataSource;
+        queryKey: ['banner', ordering, page],
+        queryFn: () => request.get<CategoryListType>(`/banner/${ordering ? `?ordering=${ordering}` : ''}`, {
+            params: {offset: page, limit: 4}
+        }).then((res) => {
+            return {
+                data: res.data,
+                pageSize: Math.ceil(res.data.count)
+            }
         })
     });
 };

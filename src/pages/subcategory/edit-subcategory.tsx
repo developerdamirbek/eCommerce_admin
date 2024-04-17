@@ -18,12 +18,10 @@ interface SubcategoryType {
 }
 
 interface DataType {
-  attr_list: {
-      title: string;
-      category: number[];
-      values: string[];
-  }[];
-  category_id: string | null 
+  items: {
+    title: string,
+    values: {value: string}[]
+}[]
 }
 
 export const EditSubcategory: React.FC = () => {
@@ -48,13 +46,8 @@ export const EditSubcategory: React.FC = () => {
     });
   };
 
-  const submitAttribute = (values: any) => {
-    const attributes = values.items?.map((item: {
-        title: string;
-        category: number[];
-        values: { value: string, value_id: string | null }[];
-
-    }) => {
+  const submitAttribute = (values: DataType) => {
+    const attributes = values.items?.map((item) => {
       return {
         attribute_id: null,
         title: item.title,

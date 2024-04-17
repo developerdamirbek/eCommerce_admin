@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Button, Table, Popconfirm, message, Image, Spin, Space, Modal } from 'antd';
+import { Button, Table, Popconfirm, message, Image, Spin, Space, Modal, PaginationProps, Pagination } from 'antd';
 import { useGetCategory } from './service/query/useGetCategory';
-import { PlusCircleOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import './style.scss';
 import { useDeleteCategory } from './service/mutation/useDeleteCategory';
 import { useNavigate } from 'react-router-dom';
@@ -10,18 +10,68 @@ import notification from './delete.mp3'
 import { Searchbar } from '../../components/search/searchbar';
 
 export const Category = () => {
-    const { data, isLoading } = useGetCategory();
     const deleteCategoryMutation = useDeleteCategory();
     const { mutate: deleteCategory } = deleteCategoryMutation;
     const [deletedIds, setDeletedIds] = useState<number[]>([]);
     const navigate = useNavigate();
 
-
+    const [page, setPage] = useState(1)
+    const [page1, setPage1] = useState(1)
+    const { data, isLoading } = useGetCategory(page)
 
     const audioPlayer: any = useRef(null);
 
     const playAudio = () => {
         audioPlayer.current.play();
+    }
+
+    const dataSource = data?.data.results?.map((item) => ({
+        key: item.id,
+        id: item.id,
+        image: <Image src={item.image} width={60} height={60} alt="img" />,
+        title: item.title,
+        actions: (
+            <span className='btn_group'>
+                <Popconfirm
+                    title="Are you sure you want to delete this category?"
+                    onConfirm={() => handleDelete(item.id)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button danger type="primary" icon={<DeleteOutlined />}>Delete</Button>
+                    <audio ref={audioPlayer} src={notification} />
+                </Popconfirm>
+                <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(item.id)}>Edit</Button>
+            </span>
+        ),
+    }));
+
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image'
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            dataIndex: "actions"
+        },
+    ];
+
+    const pageChange: PaginationProps["onChange"] = (page) => {
+        setPage1(page)
+        setPage(page !== 1 ? (page -1 ) * 4 : 1)
     }
 
     const handleDelete = (categoryId: number) => {
@@ -45,63 +95,6 @@ export const Category = () => {
         navigate(`/app/category/edit/${categoryId}`);
     };
 
-    const columns = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'Image',
-            dataIndex: 'image',
-            key: 'image',
-            render: (image: string) => (
-                <div style={{ position: 'relative' }}>
-                    <Image src={image}
-                        alt="Category"
-                        style={{ width: 70, height: 70, objectFit: 'cover', cursor: 'pointer' }}
-                    />
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0, transition: 'opacity 0.3s', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: '50%', padding: '5px' }}>
-                        <EyeOutlined style={{ fontSize: 24, color: '#fff' }} />
-                    </div>
-                </div>
-            ),
-            onCell: () => {
-                return {
-                    onMouseEnter: () => {
-                        document.querySelector('.eye-icon')?.setAttribute('style', 'opacity: 1');
-                    },
-                    onMouseLeave: () => {
-                        document.querySelector('.eye-icon')?.setAttribute('style', 'opacity: 0');
-                    },
-                };
-            },
-        },
-        {
-            title: 'Title',
-            dataIndex: 'title',
-            key: 'title',
-        },
-        {
-            title: 'Actions',
-            key: 'actions',
-            render: (_: any, data: any) => (
-                <span className='btn_group'>
-                    <Popconfirm
-                        title="Are you sure you want to delete this category?"
-                        onConfirm={() => handleDelete(data.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button type="primary" icon={<DeleteOutlined />}>Delete</Button>
-                        <audio ref={audioPlayer} src={notification} />
-                    </Popconfirm>
-                    <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(data.id)}>Edit</Button>
-                </span>
-            ),
-        },
-    ];
-
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -113,23 +106,38 @@ export const Category = () => {
     };
 
 
+
+
+
+
+
+
+
     return (
         <div>
             <Space style={{ display: 'flex', marginBottom: 10, alignItems: "center", justifyContent: "space-between" }}>
                 <Button style={{ marginBottom: 0 }} onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
                     Create
                 </Button>
-                <Button icon={<SearchOutlined />} type="primary" onClick={showModal}>
-                    Search
-                </Button>
-                <Modal title="Search Category" open={isModalOpen} onCancel={handleCancel}>
-                    <Searchbar api_url='category' />
-                </Modal>
+                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "end" }}>
+                    <Button icon={<SearchOutlined />} type="primary" onClick={showModal}>
+                        Search
+                    </Button>
+                    <Modal title="Search Category" open={isModalOpen} onCancel={handleCancel}>
+                        <Searchbar api_url='category' />
+                    </Modal>
+                    <Pagination
+                        style={{ width: "100%", display: "flex", justifyContent: "end", marginBottom: 10, marginTop: 10 }}
+                        current={page1}
+                        total={data?.pageSize}
+                        defaultCurrent={page}
+                        pageSize={4}
+                        onChange={pageChange} />
+                </div>
             </Space>
 
             <Spin spinning={isLoading}>
-                <Table className='table' dataSource={data} columns={columns} />
-
+                <Table pagination={false} className='table' dataSource={dataSource} columns={columns} />
             </Spin>
 
 

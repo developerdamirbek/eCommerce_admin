@@ -10,7 +10,7 @@ import { EditCategory } from "../pages/category/edit-category";
 import { EditSubcategory } from "../pages/subcategory/edit-subcategory";
 import { Attribute } from "../pages/attribute/attribute";
 import { EditAttribute } from "../pages/attribute/edit-attribute";
-import { CreateAttribute } from "../pages/attribute/create-attribute";
+// import { CreateAttribute } from "../pages/attribute/create-attribute";
 import { CreateBrand } from "../pages/brands/create-brand";
 import { EditBrand } from "../pages/brands/edit-brand";
 import { Products } from "../pages/products/products";
@@ -86,12 +86,12 @@ export const routes: RoutesType[] = [
         path: "attributes/edit/:id",
         component: EditAttribute
     },
-    {
-        id: nanoid(),
-        name: "Attribute Create",
-        path: "attributes/create",
-        component: CreateAttribute
-    },
+    // {
+    //     id: nanoid(),
+    //     name: "Attribute Create",
+    //     path: "attributes/create",
+    //     component: CreateAttribute
+    // },
     {
         id: nanoid(),
         name: "Brand Create",
