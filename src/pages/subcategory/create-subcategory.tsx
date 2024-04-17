@@ -6,7 +6,6 @@ import { CreateAttribute } from './components/createAttribute';
 import { SubcategoryForm } from './components/subcategory-form';
 
 export const CreateSubcategory = () => {
-    const [form] = Form.useForm();
     const [subcategoryTabDisabled, setSubcategoryTabDisabled] = useState(true);
 
     const [subcategoryID, setSubcategoryID] = useState<number | null>(null); 
@@ -27,7 +26,6 @@ export const CreateSubcategory = () => {
         postSubcategory(formData, {
             onSuccess: (data) => { 
                 message.success('Subcategory created successfully!');
-                form.resetFields();
                 setActiveTab("2");
                 setSubcategoryID(data.data?.id);
                 setFormSubmitted(true)

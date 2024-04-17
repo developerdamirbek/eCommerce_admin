@@ -1,4 +1,4 @@
-import { Button, Image, Popconfirm, Select, Table, message } from 'antd';
+import { Button, Image, Popconfirm, Select, Spin, Table, message } from 'antd';
 import { PlusCircleOutlined, EditOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useGetBrand } from './service/query/useGetBrand';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,7 @@ export const Brands: React.FC = () => {
 
     const { data: brands, isLoading, refetch } = useGetBrand(ordering);
     const navigate = useNavigate();
-    const { mutate } = useDeleteBrand();
+    const { mutate, isPending } = useDeleteBrand();
 
     const handleEdit = (brandId: number) => {
         navigate(`/app/brand/edit/${brandId}`);
@@ -87,25 +87,27 @@ export const Brands: React.FC = () => {
         }
     ];
 
-
-
     return (
         <div>
-            <Button style={{ marginBottom: 20 }} onClick={() => navigate("/app/brand/create")} type="primary" icon={<PlusCircleOutlined />}>
-                Create
-            </Button>
-            <Select placeholder defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
+            <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Button style={{ marginBottom: 20 }} onClick={() => navigate("/app/brand/create")} type="primary" icon={<PlusCircleOutlined />}>
+                    Create
+                </Button>
+                <Select placeholder defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
                     {options.map(option => (
                         <Option key={option.value} value={option.value}>{option.label}</Option>
                     ))}
                 </Select>
-            <Table
-                className='brandTable'
-                dataSource={brands}
-                columns={columns}
-                loading={isLoading}
-                rowKey="id"
-            />
+            </div>
+            <Spin spinning={isLoading || isPending}>
+                <Table
+                    className='brandTable'
+                    dataSource={brands}
+                    columns={columns}
+                    loading={isLoading}
+                    rowKey="id"
+                />
+            </Spin>
         </div>
     );
 };

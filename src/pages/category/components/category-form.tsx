@@ -35,6 +35,7 @@ export const CategoryForm: React.FC<CategoryProps> = ({ submit, initialValue, lo
     return (
         <div>
             <Form
+                style={{ width: 600 }}
                 name="create-category"
                 onFinish={submit}
                 autoComplete="off"

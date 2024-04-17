@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Spin, message } from 'antd';
 import { ProductForm } from './components/product-form';
 import { useGetProductById } from './service/query/useGetProductById';
@@ -8,8 +8,7 @@ export const EditProduct = () => {
   const { id } = useParams();
   const {data, isLoading} = useGetProductById(id)
   const {mutate, isPending} = useEditProduct(id)
-  console.log(id);
-  
+  const navigate = useNavigate()
 
   const submit = (data: any) => {
     const formData = new FormData();
@@ -30,7 +29,8 @@ export const EditProduct = () => {
     formData.append("price", data.price)
     mutate(formData, {
       onSuccess: () => {
-        message.success("product update")
+        message.success("Product updated successfully!")
+        navigate('/app/product')
       }
     })
   }

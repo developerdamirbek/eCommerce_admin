@@ -33,7 +33,6 @@ interface ProductProps {
     }
 }
 
-
 export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailValue }) => {
 
     const { data } = useGetSubcategories()
@@ -42,7 +41,6 @@ export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailVa
     const onchange: UploadProps["onChange"] = ({ fileList }) => {
         setFileList(fileList)
     }
-
 
     return (
         <Form
@@ -54,7 +52,6 @@ export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailVa
             autoComplete="off"
             encType="multipart/form-data"
         >
-
             <Form.Item
                 label="Category"
                 name="category"
@@ -68,10 +65,8 @@ export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailVa
                         label: item.title
                     }))}
                 >
-
                 </Select>
             </Form.Item>
-
             <Space>
                 <Form.Item
                     name="is_available"
@@ -138,4 +133,3 @@ export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailVa
         </Form>
     );
 };
-

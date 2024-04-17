@@ -23,7 +23,7 @@ interface SubcategoryProps {
             file: File,
             fileList: FileList
         };
-        parent: number;
+        parent: string;
     }
 }
 
@@ -38,6 +38,7 @@ export const SubcategoryForm: React.FC<SubcategoryProps> = ({ submit, loading, i
     return (
         <div>
             <Form
+                style={{ width: 600 }}
                 onFinish={submit}
                 layout="vertical"
                 initialValues={initialValue}
@@ -90,7 +91,7 @@ export const SubcategoryForm: React.FC<SubcategoryProps> = ({ submit, loading, i
                     <Image width={100} src={typeof initialValue.image == "string" ? initialValue.image : ''} />
                 )}
                 <Form.Item>
-                    <Button type="primary" loading={loading} htmlType="submit">
+                    <Button style={{marginTop: 20}} type="primary" loading={loading} htmlType="submit">
                         Submit
                     </Button>
                 </Form.Item>

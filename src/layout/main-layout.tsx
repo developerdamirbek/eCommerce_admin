@@ -1,8 +1,12 @@
 import React from 'react';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, Modal, message, theme } from 'antd';
 import './style.scss'
 import { Outlet, useNavigate } from 'react-router-dom';
 import { menu } from './data/menu';
+import { ExclamationCircleFilled, LogoutOutlined } from '@ant-design/icons';
+import Cookies from 'js-cookie';
+
+const { confirm } = Modal;
 
 const { Header, Content, Sider } = Layout;
 
@@ -20,10 +24,25 @@ export const MainLayout: React.FC = () => {
         onClick: () => navigate(item.path),
     }));
 
+    const showConfirm = () => {
+        confirm({
+            title: 'Do you want to log out?',
+            icon: <ExclamationCircleFilled/>,
+            cancelText: 'No',
+            onOk() {
+                Cookies.remove("token")
+                navigate("/");
+                message.success("You logged out successfully!")
+            }
+        });
+    };
+
     return (
         <Layout className='layout'>
-            <Header style={{ display: 'flex', alignItems: 'center' }}>
+            <Header style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
                 <div className="logo">ADMIN</div>
+                <LogoutOutlined onClick={showConfirm} style={{ fontSize: 20, color: "white" }} />
+
             </Header>
             <Layout className='sidebar'>
                 <Sider className='sidebar_menu' theme='dark' width={200}>

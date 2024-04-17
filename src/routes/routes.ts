@@ -107,19 +107,19 @@ export const routes: RoutesType[] = [
     {
         id: nanoid(),
         name: "Products",
-        path: "products",
+        path: "product",
         component: Products
     },
     {
         id: nanoid(),
         name: "Products Edit",
-        path: "products/edit/:id",
+        path: "product/edit/:id",
         component: EditProduct
     },
     {
         id: nanoid(),
         name: "Create Product",
-        path: "products/create",
+        path: "product/create",
         component: CreateProduct
     },
     {

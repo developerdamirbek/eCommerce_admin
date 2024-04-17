@@ -11,7 +11,7 @@ export const Banner = () => {
     const navigate = useNavigate();
     const [ordering, setOrdering] = useState("id");
     const { data, refetch, isLoading } = useGetBanner(ordering);
-    const { mutate } = useDeleteBanner()
+    const { mutate, isPending } = useDeleteBanner()
 
     useEffect(() => {
         refetch();
@@ -100,7 +100,7 @@ export const Banner = () => {
                     ))}
                 </Select>
             </Space>
-            <Spin spinning={isLoading}>
+            <Spin spinning={isLoading || isPending}>
                 <Table className="table" dataSource={data} columns={columns} />
             </Spin>
         </div>

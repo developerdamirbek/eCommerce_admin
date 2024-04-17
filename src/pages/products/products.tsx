@@ -12,12 +12,12 @@ export const Products = () => {
     const { mutate, isPending } = useDeleteProduct();
 
     const handleCreate = () => {
-        navigate('/app/products/create');
+        navigate('/app/product/create');
     };
 
     const handleEdit = (productId: number) => {
 
-        navigate(`/app/products/edit/${productId}`);
+        navigate(`/app/product/edit/${productId}`);
 
     };
 

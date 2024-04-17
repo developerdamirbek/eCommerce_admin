@@ -15,37 +15,28 @@ interface BannerType {
 }
 
 export const EditBanner = () => {
-  const { id } = useParams();
-  const {data, isLoading} = useGetBannertById(id)
-  const {mutate, isPending} = useEditBanner(id)
-  const navigate = useNavigate()
-  
+    const { id } = useParams();
+    const { data, isLoading } = useGetBannertById(id)
+    const { mutate, isPending } = useEditBanner(id)
+    const navigate = useNavigate()
 
-  const submit = (data: BannerType) => {
-    const formData = new FormData();
-    formData.append("title", data.title);
-    if(data.image && (data.image.file instanceof File)){
-        formData.append("image", data.image.file);
-      }
-    
-    formData.append("description", data.description)
-    mutate(formData, {
-      onSuccess: () => {
-        navigate("/app/banner")
-        message.success("Banner updated successfully!")
-      }
-    })
-  }
+    const submit = (data: BannerType) => {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        if (data.image && (data.image.file instanceof File)) {
+            formData.append("image", data.image.file);
+        }
 
+        formData.append("description", data.description)
+        mutate(formData, {
+            onSuccess: () => {
+                navigate("/app/banner")
+                message.success("Banner updated successfully!")
+            }
+        })
+    }
 
-
-
-
-
-
-
-  return isLoading ? <Spin/> : (
-    
-    <BannerForm submit={submit} loading={isPending} initialValue={data} />
-  );
+    return isLoading ? <Spin /> : (
+        <BannerForm submit={submit} loading={isPending} initialValue={data} />
+    );
 };

@@ -38,6 +38,7 @@ export const BannerForm: React.FC<BannerProps> = ({ submit, initialValue, loadin
     return (
         <div>
             <Form
+                style={{ width: 600 }}
                 layout="vertical"
                 name="createBannerForm"
                 onFinish={submit}

@@ -35,12 +35,13 @@ export const BrandForm: React.FC<BrandProps> = ({ submit, initialValue, loading 
     return (
         <div>
             <Form
+                style={{ width: 600 }}
                 name="create-category"
                 onFinish={submit}
                 autoComplete="off"
                 layout="vertical"
                 className='form'
-                initialValues={initialValue }
+                initialValues={initialValue}
             >
                 <Form.Item
                     label="Title"
