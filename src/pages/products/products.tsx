@@ -127,7 +127,7 @@ export const Products = () => {
                         onChange={pageChange} />
                 </div>
             </Space>
-            <Spin spinning={isPending}>
+            <Spin spinning={isPending || isLoading}>
                 <Table pagination={false} className="table" dataSource={data?.data.results} columns={columns} />
             </Spin>
         </div>

@@ -1,24 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import request from '../../../../config/request';
 
-interface SubcategoryType {
-    id: number,
-    image: string,
-    title: string
-}
 
-export const useGetSubcategories = () => {
+export const useGetSubcategories = (page?: number) => {
     return useQuery(
         {
-            queryKey: ['subcategories'],
-            queryFn: () => request.get('/api/subcategory/').then((res) => {
-                const { results } = res.data;
-                const subcategories = results.map((subcategory: SubcategoryType) => ({
-                    id: subcategory.id,
-                    image: subcategory.image,
-                    title: subcategory.title
-                }));
-                return subcategories;
+            queryKey: ['subcategories', page],
+            queryFn: () => request.get('/api/subcategory/', {
+                params: { offset: page, limit: page ? 4 : '' }
+            }).then((res) => {
+                return {
+                    data: res.data,
+                    pageSize: Math.ceil(res.data.count)
+                }
             })
 
         },

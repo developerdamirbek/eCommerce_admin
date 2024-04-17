@@ -1,9 +1,9 @@
-import { AttributeEdit } from "./components/attribute-edit"
+// import { AttributeEdit } from "./components/attribute-edit"
 
-export const EditAttribute = () => {
-  return (
-    <div>
-        <AttributeEdit/>
-    </div>
-  )
-}
+// export const EditAttribute = () => {
+//   return (
+//     <div>
+//         <AttributeEdit/>
+//     </div>
+//   )
+// }

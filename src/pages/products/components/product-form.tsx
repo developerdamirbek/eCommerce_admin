@@ -36,6 +36,8 @@ interface ProductProps {
 export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailValue }) => {
 
     const { data } = useGetSubcategories()
+    console.log(data);
+    
     const [fileList, setFileList] = useState<UploadFile[]>([])
 
     const onchange: UploadProps["onChange"] = ({ fileList }) => {
@@ -60,7 +62,7 @@ export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailVa
             >
                 <Select
                     placeholder="Parent Category"
-                    options={data?.map((item: any) => ({
+                    options={data?.data.results.map((item: {id: number, title: string}) => ({
                         value: item.id,
                         label: item.title
                     }))}

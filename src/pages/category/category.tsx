@@ -10,14 +10,13 @@ import notification from './delete.mp3'
 import { Searchbar } from '../../components/search/searchbar';
 
 export const Category = () => {
-    const deleteCategoryMutation = useDeleteCategory();
-    const { mutate: deleteCategory } = deleteCategoryMutation;
+    const {mutate: deleteCategory, isPending} = useDeleteCategory();
     const [deletedIds, setDeletedIds] = useState<number[]>([]);
     const navigate = useNavigate();
 
     const [page, setPage] = useState(1)
     const [page1, setPage1] = useState(1)
-    const { data, isLoading } = useGetCategory(page)
+    const { data, isLoading, refetch } = useGetCategory(page)
 
     const audioPlayer: any = useRef(null);
 
@@ -80,6 +79,7 @@ export const Category = () => {
                 message.success('Category deleted successfully!');
                 setDeletedIds([...deletedIds, categoryId]);
                 playAudio()
+                refetch()
             },
             onError: () => {
                 message.error('Something went wrong!');
@@ -136,7 +136,7 @@ export const Category = () => {
                 </div>
             </Space>
 
-            <Spin spinning={isLoading}>
+            <Spin spinning={isLoading || isPending}>
                 <Table pagination={false} className='table' dataSource={dataSource} columns={columns} />
             </Spin>
 

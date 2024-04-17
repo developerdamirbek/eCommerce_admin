@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Tabs, TabsProps, message } from 'antd';
 import './style.scss';
-import { SubcategoryForm } from '../../components/form/subcategory-form';
+import { SubcategoryForm } from './components/create-subcategory';
 import { usePostCategory } from './service/mutation/usePostCategory';
 //@ts-ignore
 import SuccessNotify from "./success.mp3";
@@ -10,7 +10,8 @@ import { CategoryForm } from './components/category-form';
 interface FormDataType {
     title: string;
     image?: {
-        file: File;
+        file: File,
+        fileList: FileList
     };
 };
 

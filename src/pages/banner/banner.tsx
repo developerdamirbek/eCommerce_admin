@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetBanner } from "./service/query/useGetBanner";
 import { useDeleteBanner } from "./service/mutation/useDeleteBanner";
-import { useGetPaginationBanner } from "./service/query/useGetPaginationBanner";
 
 const { Option } = Select;
 
@@ -98,7 +97,7 @@ export const Banner = () => {
     }
     return (
         <div>
-            <Space style={{ alignItems: "center", justifyContent: "space-between", width: '100%' }}>
+            <Space style={{ alignItems: "start", justifyContent: "space-between", width: '100%' }}>
                 <Button onClick={handleCreate} className='button' type="primary" icon={<PlusCircleOutlined />} >
                     Create
                 </Button>

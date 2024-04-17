@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Spin, message, Tabs, Table, Image, Button, Popconfirm } from 'antd';
 import { useEditCategory } from './service/mutation/useEditCategory';
 import { useGetCategoryByID } from './service/query/useGetCategoryById';
@@ -24,36 +24,44 @@ export const EditCategory: React.FC = () => {
     const { data: subcategories, isLoading: subcategoriesLoading, refetch: refetchSubcategories } = useGetSubcategoriesByCategoryID(id as string);
     const { mutate: deleteSub, isPending } = useDeleteSubcategory();
 
-    const dataSource = subcategories?.children?.map((item:{key: number, id: number, title: string, image: string}) => ({
-        key: item.id,
-        id: item.id,
-        title: item.title,
-        image: item.image
-    }));
+    const [dataSource, setDataSource] = useState<any[]>([]); // State to hold dataSource
+    const navigate = useNavigate();
+
+    // Update dataSource when subcategories data changes
+    React.useEffect(() => {
+        if (subcategories?.children) {
+            setDataSource(subcategories.children.map((item: { key: number, id: number, title: string, image: string }) => ({
+                key: item.id,
+                id: item.id,
+                title: item.title,
+                image: item.image
+            })));
+        }
+    }, [subcategories]);
 
     const handleSubmit = (data: CategoryType) => {
-            const formDataObject = new FormData();
-            formDataObject.append('title', data.title);
-            if (data.image) {
-                formDataObject.append('image', data.image.file);
+        const formDataObject = new FormData();
+        formDataObject.append('title', data.title);
+        if (data.image && (data.image.file instanceof File)) {
+            formDataObject.append("image", data.image.file);
+        }
+        mutate(formDataObject, {
+            onSuccess: () => {
+                message.success('Category edited successfully!');
+                navigate("/app/category")
             }
-            mutate(formDataObject, {
-                onSuccess: () => {
-                    message.success('Category edited successfully!');
-                }
-            });
-
+        });
     };
 
-    const handleDelete =  (id: string) => {
-
-            deleteSub(id, {
-                onSuccess: () => {
-                    message.info("Subcategory deleted successfully!");
-                    refetchSubcategories();
-                }
-            });
-
+    const handleDelete = (id: string | undefined) => {
+        deleteSub(id, {
+            onSuccess: () => {
+                message.info("Subcategory deleted successfully!");
+                refetchSubcategories();
+                const updatedDataSource = dataSource.filter(item => item.id !== id);
+                setDataSource(updatedDataSource);
+            }
+        });
     };
 
     const columns = [
@@ -79,31 +87,27 @@ export const EditCategory: React.FC = () => {
             title: "Actions",
             dataIndex: 'actions',
             key: 'actions',
-            render: (data: { id: string }) => (
+            render: (record: { id: string | undefined }) => (
                 <span className='btn_group'>
                     <Popconfirm
                         title="Are you sure you want to delete this category?"
-                        onConfirm={() => handleDelete(data.id)}
+                        onConfirm={() => handleDelete(record.id)}
                         okText="Yes"
                         cancelText="No"
                     >
                         <Button type="primary" style={{ backgroundColor: "red" }} icon={<DeleteOutlined />}>Delete</Button>
                     </Popconfirm>
-                    <Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>Edit</Button>
+                    <Button type="primary" icon={<EditOutlined />} onClick={() => navigate(`/app/subcategory/edit/${record.id}`)}>Edit</Button>
                 </span>
             )
         }
     ];
 
-    const handleEdit = () => {
-        console.log("Edit");
-    };
-
     const items = [
         {
             key: '1',
             label: 'Edit Category',
-            children: categoryLoading ? <Spin/> : <CategoryForm loading={isPending} initialValue={categoryData} submit={handleSubmit}/>
+            children: categoryLoading ? <Spin /> : <CategoryForm loading={isPending} initialValue={categoryData} submit={handleSubmit} />
         },
         {
             key: '2',
@@ -125,4 +129,3 @@ export const EditCategory: React.FC = () => {
         </div>
     );
 };
-

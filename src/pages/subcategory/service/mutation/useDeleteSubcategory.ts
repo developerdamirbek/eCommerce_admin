@@ -4,7 +4,7 @@ import request from "../../../../config/request";
 export const useDeleteSubcategory = () => {
     return useMutation({
         mutationKey: ["delete-subcategory"],
-        mutationFn: (subcategoryId: string) => (
+        mutationFn: (subcategoryId: string | undefined) => (
             request.delete(`/category/${subcategoryId}/`)
                 .then(response => response.data)
                 .catch(error => {
