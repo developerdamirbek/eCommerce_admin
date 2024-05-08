@@ -10,7 +10,7 @@ export interface Attribute {
 interface Payload {
     items: {
         title: string,
-        values: {value: string}[]
+        values: { value: string }[]
     }[]
 }
 
@@ -20,7 +20,7 @@ interface AttributeProps {
         attributes: {
             id: string | null,
             title: string,
-            values : {
+            values: {
                 Value_id: string,
                 value: string
             }[]
@@ -29,7 +29,7 @@ interface AttributeProps {
     loading: boolean
 }
 
-export const AttributeForm: React.FC<AttributeProps> = ({ submit, loading, initialValue}) => {
+export const AttributeForm: React.FC<AttributeProps> = ({ submit, loading, initialValue }) => {
     return (
         <div style={{ maxHeight: 460, overflowY: 'auto' }}>
             <Form
@@ -38,8 +38,6 @@ export const AttributeForm: React.FC<AttributeProps> = ({ submit, loading, initi
                 style={{ maxWidth: 600 }}
                 autoComplete="off"
                 onFinish={submit}
-                
-
             >
                 <Form.List name="items" initialValue={initialValue?.attributes}>
                     {(fields, { add, remove }) => (
@@ -61,7 +59,6 @@ export const AttributeForm: React.FC<AttributeProps> = ({ submit, loading, initi
                                     <Form.Item label="Name" name={[field.name, 'title']} style={{ marginBottom: '10px' }}>
                                         <Input />
                                     </Form.Item>
-
                                     <Form.Item label="Values" style={{ marginBottom: '0' }}>
                                         <Form.List name={[field.name, 'values']}>
                                             {(subFields, subOpt) => (

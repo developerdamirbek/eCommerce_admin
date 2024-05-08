@@ -7,11 +7,15 @@ import { ExclamationCircleFilled, LogoutOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
 
 const { confirm } = Modal;
-
 const { Header, Content, Sider } = Layout;
 
 export const MainLayout: React.FC = () => {
     const navigate = useNavigate();
+    const token = Cookies.get('token');
+
+    if(!token){
+        window.location.replace("/")
+    }
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -42,7 +46,6 @@ export const MainLayout: React.FC = () => {
             <Header style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
                 <div className="logo">ADMIN</div>
                 <LogoutOutlined onClick={showConfirm} style={{ fontSize: 20, color: "white" }} />
-
             </Header>
             <Layout className='sidebar'>
                 <Sider className='sidebar_menu' theme='dark' width={200}>

@@ -1,6 +1,7 @@
 import { message } from "antd";
 import { ProductForm } from "./components/product-form"
 import { usePostProduct } from "./service/mutation/usePostProduct"
+import { useNavigate } from "react-router-dom";
 
 interface ProductFormData {
   category: string;
@@ -16,6 +17,7 @@ interface ProductFormData {
 }
 export const CreateProduct = () => {
   const { mutate, isPending } = usePostProduct();
+  const navigate = useNavigate()
 
   const submit = (data: ProductFormData) => {
     const formData = new FormData();
@@ -38,6 +40,7 @@ export const CreateProduct = () => {
     mutate(formData, {
       onSuccess: () => {
         message.success("product create")
+        navigate("/app/product")
       }
     })
   }

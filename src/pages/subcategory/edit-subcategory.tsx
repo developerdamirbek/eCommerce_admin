@@ -26,7 +26,7 @@ interface DataType {
 
 export const EditSubcategory: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = useGetCategoryByID(id);
+  const { data, isLoading, refetch } = useGetCategoryByID(id);
 
   const navigate = useNavigate()
 
@@ -42,6 +42,8 @@ export const EditSubcategory: React.FC = () => {
     editCategory(formData, {
       onSuccess: () => {
         message.success("Category Edited");
+        navigate('/app/subcategory');
+        refetch()
       }
     });
   };

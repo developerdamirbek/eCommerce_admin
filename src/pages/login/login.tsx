@@ -15,7 +15,7 @@ export const Login: React.FC = () => {
 
 
   const navigate = useNavigate();
-  const { mutate } = usePostUser();
+  const { mutate, isPending } = usePostUser();
 
   React.useEffect(() => {
     if (Cookies.get("token")){
@@ -30,8 +30,8 @@ export const Login: React.FC = () => {
         navigate("/app", {replace: true});
         Cookies.set("token", res.token, {expires: 7})
       },
-      onError: (error: any) => {
-        console.error(error);
+      onError: () => {
+        message.error("Incorrect Password or Username!");
       }
     });
   };
@@ -68,7 +68,7 @@ export const Login: React.FC = () => {
             />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button type="primary" loading={isPending} htmlType="submit" className="login-form-button">
               Login
             </Button>
           </Form.Item>

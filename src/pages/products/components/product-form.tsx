@@ -36,7 +36,6 @@ interface ProductProps {
 export const ProductForm: React.FC<ProductProps> = ({ submit, loading, initailValue }) => {
 
     const { data } = useGetSubcategories()
-    console.log(data);
     
     const [fileList, setFileList] = useState<UploadFile[]>([])
 

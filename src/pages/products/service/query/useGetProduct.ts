@@ -22,7 +22,7 @@ export interface ProductListType {
 
 export const useGetProduct = ( page : number = 1 ) => {
     return useQuery({
-        queryKey: ['banner', page],
+        queryKey: ['product', page],
         queryFn: () => request.get<ProductListType>(`/product/`, {
             params: {offset: page, limit: 4}
         }).then((res) => {

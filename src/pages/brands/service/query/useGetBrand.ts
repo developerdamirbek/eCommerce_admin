@@ -4,7 +4,7 @@ import request from "../../../../config/request";
  interface Brand {
     id: number;
     title: string;
-    image: string | null;
+    image: string;
 }
 
  interface BrandListType {

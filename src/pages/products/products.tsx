@@ -1,30 +1,38 @@
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Image, Modal, Pagination, PaginationProps, Popconfirm, Space, Spin, Table } from "antd";
+import { Button, Image, Modal, Pagination, PaginationProps, Popconfirm, Space, Spin, Table, TableProps } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useGetProduct } from "./service/query/useGetProduct";
 import { useDeleteProduct } from "./service/mutation/useDeleteProduct";
 import { Searchbar } from "../../components/search/searchbar";
 import { useState } from "react";
 
+export interface Product {
+    title: string;
+    image: {
+        file: File;
+    };
+    price: string;
+    key: number;
+    id: number;
+}
+
+
 export const Products = () => {
     const navigate = useNavigate();
     const { mutate, isPending } = useDeleteProduct();
+    
+    const [page, setPage] = useState(1)
+    const [page1, setPage1] = useState(1)
+    const { data, isLoading, refetch } = useGetProduct(page)
+    
 
     const handleCreate = () => {
         navigate('/app/product/create');
     };
 
     const handleEdit = (productId: number) => {
-
         navigate(`/app/product/edit/${productId}`);
-
     };
-
-
-    const [page, setPage] = useState(1)
-    const [page1, setPage1] = useState(1)
-    const { data, isLoading, refetch } = useGetProduct(page)
-
 
     const pageChange: PaginationProps["onChange"] = (page) => {
         setPage1(page)
@@ -39,8 +47,15 @@ export const Products = () => {
         });
     };
 
-
-    const columns = [
+    const dataSource = data?.data.results.map((item) =>( {
+        title: item.title,
+        image: item.image,
+        price: item.price,
+        key: item.id,
+        id: item.id
+    }))
+    
+    const columns: TableProps<Product>['columns'] = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -63,33 +78,29 @@ export const Products = () => {
             key: 'price',
         },
         {
-            title: 'Available',
-            dataIndex: 'is_available',
-            key: 'is_available',
-            render: (isAvailable: boolean) => isAvailable ? 'Yes' : 'No',
-        },
-        {
-            title: 'New',
-            dataIndex: 'is_new',
-            key: 'is_new',
-            render: (isNew: boolean) => isNew ? 'Yes' : 'No',
-        },
-        {
             title: 'Actions',
             key: 'actions',
-            render: (record: { id: string }) => (
+            render: (_, data) => (
                 <span>
-                    <Button style={{ marginRight: 20 }} type="primary" icon={<EditOutlined />} onClick={() => handleEdit(Number(record.id))}>Edit</Button>
+                    <Button style={{ marginRight: 20 }} type="primary" icon={<EditOutlined />} onClick={() => handleEdit(Number(data.id))}>Edit</Button>
                     <Popconfirm
                         title="Are you sure you want to delete this product?"
                         icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
-                        onConfirm={() => handleDelete(record.id)}
+                        onConfirm={() => handleDelete(String(data.id))}
                         okText="Yes"
                         cancelText="No"
                     >
                         <Button type="default" danger icon={<DeleteOutlined />}>Delete</Button>
                     </Popconfirm>
                 </span>
+            ),
+        },
+        {
+            title: 'Variant',
+            dataIndex: 'variant',
+            key: 'variant',
+            render: (_, data) => (
+                <Button type="primary" onClick={() => navigate(`/app/product/variant/${data.id}`)}>Variant</Button>
             ),
         },
     ];
@@ -128,7 +139,7 @@ export const Products = () => {
                 </div>
             </Space>
             <Spin spinning={isPending || isLoading}>
-                <Table pagination={false} className="table" dataSource={data?.data.results} columns={columns} />
+                <Table pagination={false} className="table" dataSource={dataSource} columns={columns} />
             </Spin>
         </div>
     );

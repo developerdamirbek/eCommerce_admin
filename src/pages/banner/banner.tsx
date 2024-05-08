@@ -1,11 +1,18 @@
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Image, Pagination, PaginationProps, Popconfirm, Select, Space, Spin, Table, message } from "antd";
+import { Button, Image, Pagination, PaginationProps, Popconfirm, Select, Space, Spin, Table, TableProps, message } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetBanner } from "./service/query/useGetBanner";
 import { useDeleteBanner } from "./service/mutation/useDeleteBanner";
 
 const { Option } = Select;
+
+interface DataType {
+    title: string;
+    id: number;
+    image: string;
+    key: number;
+}
 
 export const Banner = () => {
     const navigate = useNavigate();
@@ -14,7 +21,14 @@ export const Banner = () => {
 
     const [page, setPage] = useState(0)
     const [page1, setPage1] = useState(1)
-    const { data, isLoading, refetch } = useGetBanner(ordering, page)
+    const { data, isLoading, refetch } = useGetBanner(ordering, page);
+
+    const dataSource = data?.data.results.map((item) => ({
+        title: item.title,
+        id: item.id,
+        image: item.image,
+        key: item.id
+    }))
 
     useEffect(() => {
         refetch();
@@ -41,7 +55,7 @@ export const Banner = () => {
         setOrdering(value);
     };
 
-    const columns = [
+    const columns: TableProps<DataType>["columns"] = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -118,7 +132,7 @@ export const Banner = () => {
             </Space>
 
             <Spin spinning={isLoading || isPending}>
-                <Table pagination={false} className="table" dataSource={data?.data.results} columns={columns} />
+                <Table pagination={false} className="table" dataSource={dataSource} columns={columns} />
             </Spin>
         </div>
     );

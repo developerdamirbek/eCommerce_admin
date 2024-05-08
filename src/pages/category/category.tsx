@@ -31,16 +31,16 @@ export const Category = () => {
         title: item.title,
         actions: (
             <span className='btn_group'>
+                <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(item.id)}>Edit</Button>
                 <Popconfirm
                     title="Are you sure you want to delete this category?"
                     onConfirm={() => handleDelete(item.id)}
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button danger type="primary" icon={<DeleteOutlined />}>Delete</Button>
+                    <Button danger type="default" icon={<DeleteOutlined />}>Delete</Button>
                     <audio ref={audioPlayer} src={notification} />
                 </Popconfirm>
-                <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(item.id)}>Edit</Button>
             </span>
         ),
     }));

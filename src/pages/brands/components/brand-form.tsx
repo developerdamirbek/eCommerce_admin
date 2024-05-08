@@ -1,6 +1,6 @@
 import { InboxOutlined } from "@ant-design/icons"
 import { Button, Form, Image, Input, Upload, UploadFile, UploadProps } from "antd"
-import { useState } from "react";
+import React from "react";
 
 interface BrandDataType {
     id: number,
@@ -26,7 +26,7 @@ interface BrandProps {
 
 export const BrandForm: React.FC<BrandProps> = ({ submit, initialValue, loading }) => {
 
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [fileList, setFileList] = React.useState<UploadFile[]>([]);
 
     const onchange: UploadProps["onChange"] = ({ fileList }) => {
         setFileList(fileList)

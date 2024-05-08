@@ -1,15 +1,15 @@
-import { Button, Image, Pagination, PaginationProps, Popconfirm, Select, Spin, Table, message } from 'antd';
+import { Button, Image, Pagination, PaginationProps, Popconfirm, Select, Spin, Table, TableProps, message } from 'antd';
 import { PlusCircleOutlined, EditOutlined, DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useGetBrand } from './service/query/useGetBrand';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteBrand } from './service/mutation/useDeleteBrand';
 import { useEffect, useState } from 'react';
-import { Option } from 'antd/es/mentions';
 
 interface Brand {
     id: number;
-    image: string | null;
+    image: string;
     title: string;
+    key: number
 }
 
 export const Brands: React.FC = () => {
@@ -47,6 +47,13 @@ export const Brands: React.FC = () => {
         });
     };
 
+    const dataSource = brands?.data.results.map((item) => ({
+        title: item.title,
+        id: item.id,
+        image: item.image,
+        key: item.id
+    }))
+
     const options = [
         { value: "id", label: "ID - Ascending" },
         { value: "-id", label: "ID - Descending" },
@@ -54,7 +61,7 @@ export const Brands: React.FC = () => {
         { value: "-title", label: "Title - Descending" }
     ];
 
-    const columns = [
+    const columns: TableProps<Brand>['columns'] = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -76,7 +83,7 @@ export const Brands: React.FC = () => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (_: any, data: Brand) => (
+            render: (_, data) => (
                 <div style={{ display: 'flex', gap: 10 }}>
                     <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(data.id)}>Edit</Button>
                     <Popconfirm
@@ -99,11 +106,8 @@ export const Brands: React.FC = () => {
                     Create
                 </Button>
                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "end" }}>
-                    <Select placeholder defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}>
-                        {options.map(option => (
-                            <Option key={option.value} value={option.value}>{option.label}</Option>
-                        ))}
-                    </Select>
+                    <Select placeholder options={options} defaultValue={ordering} style={{ width: 200, marginBottom: 10 }} onChange={handleChange}/>
+
                     <Pagination
                         style={{ width: "100%", display: "flex", justifyContent: "end", marginBottom: 10, marginTop: 10 }}
                         current={page1}
@@ -116,7 +120,7 @@ export const Brands: React.FC = () => {
             <Spin spinning={isLoading || isPending}>
                 <Table
                     className='brandTable'
-                    dataSource={brands?.data.results}
+                    dataSource={dataSource}
                     columns={columns}
                     loading={isLoading}
                     pagination={false}

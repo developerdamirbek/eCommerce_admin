@@ -8,7 +8,7 @@ import { CreateCategory } from "../pages/category/create-category";
 import { CreateSubcategory } from "../pages/subcategory/create-subcategory";
 import { EditCategory } from "../pages/category/edit-category";
 import { EditSubcategory } from "../pages/subcategory/edit-subcategory";
-import { Attribute } from "../pages/attribute/attribute";
+// import { Attribute } from "../pages/attribute/attribute";
 // import { EditAttribute } from "../pages/attribute/edit-attribute";
 // import { CreateAttribute } from "../pages/attribute/create-attribute";
 import { CreateBrand } from "../pages/brands/create-brand";
@@ -19,6 +19,8 @@ import { Banner } from "../pages/banner/banner";
 import { CreateBanner } from "../pages/banner/create-banner";
 import { EditProduct } from "../pages/products/edit-product";
 import { EditBanner } from "../pages/banner/edit-banner";
+import { ProductVariant } from "../pages/product-variant/product-variant";
+import { CreateProductVariant } from "../pages/product-variant/create-product-variant";
 
 export const routes: RoutesType[] = [
     {
@@ -74,12 +76,12 @@ export const routes: RoutesType[] = [
         path: "attribute",
         component: EditSubcategory
     },
-    {
-        id: nanoid(),
-        name: "Attribute",
-        path: "attributes",
-        component: Attribute
-    },
+    // {
+    //     id: nanoid(),
+    //     name: "Attribute",
+    //     path: "attributes",
+    //     component: Attribute
+    // },
     // {
     //     id: nanoid(),
     //     name: "Attribute Edit",
@@ -109,6 +111,18 @@ export const routes: RoutesType[] = [
         name: "Products",
         path: "product",
         component: Products
+    },
+    {
+        id: nanoid(),
+        name: "Product Variants",
+        path: "product/variant/:id",
+        component: ProductVariant
+    },
+    {
+        id: nanoid(),
+        name: "Product Variant Create",
+        path: "product/variant/create/",
+        component: CreateProductVariant
     },
     {
         id: nanoid(),

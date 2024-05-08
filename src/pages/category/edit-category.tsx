@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Spin, message, Tabs, Table, Image, Button, Popconfirm } from 'antd';
 import { useEditCategory } from './service/mutation/useEditCategory';
@@ -24,20 +24,14 @@ export const EditCategory: React.FC = () => {
     const { data: subcategories, isLoading: subcategoriesLoading, refetch: refetchSubcategories } = useGetSubcategoriesByCategoryID(id as string);
     const { mutate: deleteSub, isPending } = useDeleteSubcategory();
 
-    const [dataSource, setDataSource] = useState<any[]>([]); // State to hold dataSource
-    const navigate = useNavigate();
+    const dataSource = subcategories?.children?.map((item: { key: number, id: number, title: string, image: string }) => ({
+        key: item.id,
+        id: item.id,
+        title: item.title,
+        image: item.image
+    }));
 
-    // Update dataSource when subcategories data changes
-    React.useEffect(() => {
-        if (subcategories?.children) {
-            setDataSource(subcategories.children.map((item: { key: number, id: number, title: string, image: string }) => ({
-                key: item.id,
-                id: item.id,
-                title: item.title,
-                image: item.image
-            })));
-        }
-    }, [subcategories]);
+    const navigate = useNavigate()
 
     const handleSubmit = (data: CategoryType) => {
         const formDataObject = new FormData();
@@ -51,18 +45,23 @@ export const EditCategory: React.FC = () => {
                 navigate("/app/category")
             }
         });
+
     };
 
-    const handleDelete = (id: string | undefined) => {
-        deleteSub(id, {
+    const handleDelete = (subcategoryId: string | undefined) => {
+        deleteSub(subcategoryId, {
             onSuccess: () => {
                 message.info("Subcategory deleted successfully!");
                 refetchSubcategories();
-                const updatedDataSource = dataSource.filter(item => item.id !== id);
-                setDataSource(updatedDataSource);
+                console.log(id);
+
             }
         });
     };
+
+    const handleEdit = (subcategoryId: string | undefined) => {
+        navigate(`/app/subcategory/edit/${subcategoryId}`)
+    }
 
     const columns = [
         {
@@ -87,7 +86,7 @@ export const EditCategory: React.FC = () => {
             title: "Actions",
             dataIndex: 'actions',
             key: 'actions',
-            render: (record: { id: string | undefined }) => (
+            render: (_: { id: string }, record: { id: string | undefined }) => (
                 <span className='btn_group'>
                     <Popconfirm
                         title="Are you sure you want to delete this category?"
@@ -97,7 +96,7 @@ export const EditCategory: React.FC = () => {
                     >
                         <Button type="primary" style={{ backgroundColor: "red" }} icon={<DeleteOutlined />}>Delete</Button>
                     </Popconfirm>
-                    <Button type="primary" icon={<EditOutlined />} onClick={() => navigate(`/app/subcategory/edit/${record.id}`)}>Edit</Button>
+                    <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(record.id)}>Edit</Button>
                 </span>
             )
         }
@@ -129,3 +128,4 @@ export const EditCategory: React.FC = () => {
         </div>
     );
 };
+

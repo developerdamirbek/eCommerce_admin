@@ -11,6 +11,7 @@ interface BannerType {
     description: string
 }
 
+
 export const usePostBanner = () => {
     return useMutation({
         mutationKey: ["post-banner"],
@@ -22,4 +23,3 @@ export const usePostBanner = () => {
             }).then((res) => res.data)
     });
 };
-

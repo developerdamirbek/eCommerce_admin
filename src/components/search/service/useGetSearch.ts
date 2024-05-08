@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "../../../config/request";
 
-export const useSearchQuery = (search= '', api_url: string) => {
+export const useSearchQuery = (search = '', api_url: string) => {
     return useQuery({
         queryKey: ["search", search],
         queryFn: () => {

@@ -30,7 +30,6 @@ interface BannerProps {
 
 export const BannerForm: React.FC<BannerProps> = ({ submit, initialValue, loading }) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-
     const onchange: UploadProps["onChange"] = ({ fileList }) => {
         setFileList(fileList)
     }
@@ -62,6 +61,7 @@ export const BannerForm: React.FC<BannerProps> = ({ submit, initialValue, loadin
                         fileList={fileList}
                         beforeUpload={() => false}
                         className='upload'
+                        accept=".jpg, .jpeg, .png, .svg"
                         onChange={onchange}
                         multiple={false}
                         maxCount={1}>
@@ -70,7 +70,6 @@ export const BannerForm: React.FC<BannerProps> = ({ submit, initialValue, loadin
                         </p>
                         <p className="ant-upload-text">Click or drag file to this area to upload</p>
                     </Upload.Dragger>
-
                 </Form.Item>
                 {initialValue && !fileList.length && (
                     <Image width={100} src={typeof initialValue.image == "string" ? initialValue.image : ''} />
