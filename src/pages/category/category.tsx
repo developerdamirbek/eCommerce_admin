@@ -1,12 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Button, Table, Popconfirm, message, Image, Spin, Space, Modal, PaginationProps, Pagination } from 'antd';
 import { useGetCategory } from './service/query/useGetCategory';
 import { PlusCircleOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import './style.scss';
 import { useDeleteCategory } from './service/mutation/useDeleteCategory';
 import { useNavigate } from 'react-router-dom';
-//@ts-ignore
-import notification from './delete.mp3'
 import { Searchbar } from '../../components/search/searchbar';
 
 export const Category = () => {
@@ -18,11 +16,8 @@ export const Category = () => {
     const [page1, setPage1] = useState(1)
     const { data, isLoading, refetch } = useGetCategory(page)
 
-    const audioPlayer: any = useRef(null);
 
-    const playAudio = () => {
-        audioPlayer.current.play();
-    }
+
 
     const dataSource = data?.data.results?.map((item) => ({
         key: item.id,
@@ -39,7 +34,6 @@ export const Category = () => {
                     cancelText="No"
                 >
                     <Button danger type="default" icon={<DeleteOutlined />}>Delete</Button>
-                    <audio ref={audioPlayer} src={notification} />
                 </Popconfirm>
             </span>
         ),
@@ -78,7 +72,6 @@ export const Category = () => {
             onSuccess: () => {
                 message.success('Category deleted successfully!');
                 setDeletedIds([...deletedIds, categoryId]);
-                playAudio()
                 refetch()
             },
             onError: () => {

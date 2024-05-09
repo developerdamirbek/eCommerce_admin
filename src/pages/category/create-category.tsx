@@ -1,10 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsProps, message } from 'antd';
 import './style.scss';
 import { SubcategoryForm } from './components/create-subcategory';
 import { usePostCategory } from './service/mutation/usePostCategory';
-//@ts-ignore
-import SuccessNotify from "./success.mp3";
 import { CategoryForm } from './components/category-form';
 
 interface FormDataType {
@@ -24,11 +22,8 @@ export const CreateCategory = () => {
     const postCategoryMutation = usePostCategory();
     const { mutate: postCategory, isPending } = postCategoryMutation;
 
-    const audioPlayer: any = useRef(null);
 
-    const playAudio = () => {
-        audioPlayer.current.play();
-    }
+
 
     const handleCategoryFormSubmit = (values: FormDataType) => {
         const formData = new FormData();
@@ -42,7 +37,6 @@ export const CreateCategory = () => {
                 message.success('Category created successfully!');
                 setFormSubmitted(true);
                 setCreatedCategoryId(data?.data?.id);
-                playAudio();
             }
         });
     };
@@ -72,7 +66,6 @@ export const CreateCategory = () => {
     return (
         <div>
             <Tabs activeKey={activeTab} items={items} onChange={setActiveTab}/>
-            <audio ref={audioPlayer} src={SuccessNotify} />
         </div>
     );
 };
